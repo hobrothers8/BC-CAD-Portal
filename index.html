@@ -263,7 +263,7 @@ const CFG={
   WORKER_URL  :"https://ho-brothers-bc-proxy.meena-afa.workers.dev",
   COMPANY     :"HOBrothers",
   ENTITY      :"EJWJobs",          // read-only list — used for job lookup only
-  CAD_ENTITY  :"EJWJobsCADAPI"     // writable — used for PATCH (Vntana_Link + Pictures)
+  CAD_ENTITY  :"EJWJobsRW"         // writable — used for PATCH (Vntana_Link + Pictures)
 };
 const MAX_IMAGES=4, MAX_IMG_SIZE=25*1024*1024;
 const ALLOWED_TYPES=['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
@@ -590,7 +590,7 @@ async function proxyGet(path,qs){
   return r.json();
 }
 async function proxyPatch(path,etag,body){
-  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':'application/json','If-Match':etag||'*'},body:JSON.stringify(body)});
+  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':'application/json','If-Match': '*'},body:JSON.stringify(body)});
   if(!r.ok){const t=await r.text();throw new Error(`PATCH ${r.status}: ${t.slice(0,300)}`);}
   return r.status===204?{}:r.json();
 }
@@ -598,7 +598,7 @@ async function proxyPic(path,b64,mime){
   const raw=atob(b64.split(',')[1]||b64);
   const arr=new Uint8Array(raw.length);
   for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
-  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':mime,'If-Match':'*'},body:new Blob([arr],{type:mime})});
+  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':mime,'If-Match': '*'},body:new Blob([arr],{type:mime})});
   if(!r.ok){const t=await r.text();throw new Error(`Pic ${r.status}: ${t.slice(0,200)}`);}
   return{};
 }
@@ -841,29 +841,45 @@ async function proxyPatchByFilter(jobNo, etag, body){
   const jn   = encodeURIComponent(jobNo);
   const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
 
-  // Re-fetch for fresh etag
-  let freshEtag = etag || '*';
+  // Always fetch fresh etag from EJWJobsRW (the writable page)
+  let freshEtag = '*';
   try{
-    const gr = await fetch(`${base}/${CFG.ENTITY}?$filter=Job_No eq '${jn}'&$top=1`);
+    const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
     if(gr.ok){
       const rec = (await gr.json()).value?.[0];
-      if(rec && rec['@odata.etag']) freshEtag = rec['@odata.etag'];
+      if(rec && rec['@odata.etag']){
+        freshEtag = rec['@odata.etag'];
+        addLog('info','Fresh etag fetched from EJWJobsRW', freshEtag.slice(0,30));
+      }
     }
   }catch(_){}
 
-  // Use EJWJobsCADAPI (page 50120) - writable, exposes Vntana_Link
-  const url = `${base}/${CFG.CAD_ENTITY}(Job_No='${jn}')`;
-  const r = await fetch(url, {
-    method : 'PATCH',
-    headers: {'Content-Type':'application/json', 'If-Match': freshEtag},
-    body   : JSON.stringify(body)
-  });
-  if(r.ok || r.status===204){
-    addLog('info','PATCH succeeded',`${CFG.CAD_ENTITY}(Job_No=${jobNo})`);
-    return r.status===204?{}:r.json();
+  // Try EJWJobsRW with all key formats
+  const attempts = [
+    `${base}/EJWJobsRW(Job_No='${jn}')`,
+    `${base}/EJWJobsRW('${jn}')`,
+    `${base}/EJWJobsRW?$filter=Job_No eq '${jn}'`,
+  ];
+
+  let lastErr = 'All attempts failed';
+  for(const url of attempts){
+    try{
+      const r = await fetch(url, {
+        method : 'PATCH',
+        headers: {'Content-Type':'application/json', 'If-Match': '*'},
+        body   : JSON.stringify(body)
+      });
+      if(r.ok || r.status===204){
+        addLog('info','Thinkspace link PATCH succeeded',`Endpoint: ${url.split('/Company')[1]}`);
+        return r.status===204?{}:r.json();
+      }
+      const txt = await r.text();
+      addLog('info',`PATCH attempt result`,`${url.split('/').pop().slice(0,30)} → ${r.status}: ${txt.slice(0,80)}`);
+      lastErr = `PATCH ${r.status}: ${txt.slice(0,200)}`;
+      if(r.status!==404 && r.status!==400 && r.status!==405) break;
+    }catch(e){ lastErr = e.message; }
   }
-  const txt = await r.text();
-  throw new Error(`PATCH ${r.status}: ${txt.slice(0,250)}`);
+  throw new Error(lastErr);
 }
 
 // Picture upload — tries EJWJWJobCard then JobCard
@@ -872,37 +888,45 @@ async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
   const jn   = encodeURIComponent(jobNo);
   const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
 
-  // Get fresh etag
+  // Get fresh etag from EJWJobsRW
   let freshEtag = '*';
   try{
-    const gr = await fetch(`${base}/${CFG.ENTITY}?$filter=Job_No eq '${jn}'&$top=1`);
+    const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
     if(gr.ok){
       const rec = (await gr.json()).value?.[0];
       if(rec && rec['@odata.etag']) freshEtag = rec['@odata.etag'];
     }
   }catch(_){}
 
+  // Map slot to Picture field — slot 1=Picture_2, 2=Picture_3, 3=Picture_4, 4=Picture_4
   const picField = {1:'Picture_2',2:'Picture_3',3:'Picture_4',4:'Picture_4'}[slotIndex]||'Picture_2';
   const pureB64  = b64.split(',')[1] || b64;
 
-  // Try EJWJobsCADAPI first (works if AL page 50120 is deployed)
-  const url = `${base}/${CFG.CAD_ENTITY}(Job_No='${jn}')`;
-  try{
-    const r = await fetch(url, {
-      method : 'PATCH',
-      headers: {'Content-Type':'application/json', 'If-Match': freshEtag},
-      body   : JSON.stringify({ [picField]: pureB64 })
-    });
-    if(r.ok || r.status===204){
-      addLog('ok',`Picture saved to ${picField}`,`Job: ${jobNo}`);
-      return {};
-    }
-  }catch(_){}
+  // PATCH directly to EJWJobsRW — now has ModifyAllowed=true and Picture_2/3/4 fields
+  const attempts = [
+    `${base}/EJWJobsRW(Job_No='${jn}')`,
+    `${base}/EJWJobsRW('${jn}')`,
+  ];
 
-  // If EJWJobsCADAPI not available, log a friendly message
-  addLog('info',`Image "${mime.split("/")[1]}" saved locally`,
-    `To attach to BC job ${jobNo}: open the job in BC → click "Additional Images" button → upload there.`);
-  return { localOnly: true };
+  let lastErr = '';
+  for(const url of attempts){
+    try{
+      const r = await fetch(url, {
+        method : 'PATCH',
+        headers: {'Content-Type':'application/json', 'If-Match': '*'},
+        body   : JSON.stringify({ [picField]: pureB64 })
+      });
+      if(r.ok || r.status===204){
+        addLog('ok',`Picture saved to BC — ${picField}`,`Job: ${jobNo}`);
+        return {};
+      }
+      const t = await r.text();
+      addLog('info',`PATCH ${url.split('/').pop().slice(0,25)}`,`${r.status}: ${t.slice(0,100)}`);
+      lastErr = `${r.status}: ${t.slice(0,150)}`;
+      if(r.status!==404 && r.status!==400 && r.status!==405) break;
+    }catch(e){ lastErr = e.message; }
+  }
+  throw new Error(`Picture upload failed — ${lastErr}`);
 }
 
 // ── OVERLAY / TOAST ───────────────────────────
