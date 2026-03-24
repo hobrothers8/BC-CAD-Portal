@@ -229,10 +229,10 @@ input::placeholder{color:var(--text3);font-weight:300;}
 .log-empty{font-size:11px;color:var(--text3);text-align:center;padding:20px 0;font-style:italic;}
 
 /* ── OVERLAY ── */
-.ov{display:none;position:fixed;inset:0;background:rgba(30,24,16,0.7);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
+.ov{display:none;position:fixed;inset:0;background:rgba(20,12,4,0.82);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 .ov.on{display:flex;}
-.ov-sp{width:40px;height:40px;border:2px solid var(--gold-b);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;}
-.ov-t{font-size:11px;color:var(--text3);letter-spacing:0.3em;text-transform:uppercase;}
+.ov-diamond{width:56px;height:56px;animation:spin 1.2s linear infinite;filter:drop-shadow(0 0 10px rgba(212,174,74,0.6));}
+.ov-t{font-size:11px;color:var(--gold3);letter-spacing:0.3em;text-transform:uppercase;font-weight:500;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:12px 22px;box-shadow:var(--sh2);font-size:13px;color:var(--text);white-space:nowrap;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:1000;display:flex;align-items:center;gap:10px;}
@@ -262,8 +262,9 @@ input::placeholder{color:var(--text3);font-weight:300;}
 const CFG={
   WORKER_URL  :"https://ho-brothers-bc-proxy.meena-afa.workers.dev",
   COMPANY     :"HOBrothers",
-  ENTITY      :"EJWJobs",          // read-only list — used for job lookup only
-  CAD_ENTITY  :"EJWJobsRW"         // writable — used for PATCH (Vntana_Link + Pictures)
+  ENTITY      :"EJWJobs",
+  CAD_ENTITY  :"EJWJobsRW",
+  CO_ID       :"98240263-32db-f011-95d1-002248791087"
 };
 const MAX_IMAGES=4, MAX_IMG_SIZE=25*1024*1024;
 const ALLOWED_TYPES=['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
@@ -275,7 +276,17 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
 <div class="bg-canvas" id="bgCanvas"></div>
 
 <!-- OVERLAY & TOAST -->
-<div class="ov" id="ov"><div class="ov-sp"></div><div class="ov-t" id="ovTxt">Updating…</div></div>
+<div class="ov" id="ov">
+  <svg class="ov-diamond" viewBox="0 0 56 56" fill="none">
+    <polygon points="28,3 51,20 44,50 12,50 5,20" fill="rgba(184,150,46,0.15)" stroke="rgba(212,174,74,0.8)" stroke-width="1.2"/>
+    <polygon points="28,3 51,20 28,16" fill="rgba(212,174,74,0.3)" stroke="rgba(212,174,74,0.5)" stroke-width="0.8"/>
+    <polygon points="28,3 5,20 28,16" fill="rgba(255,200,60,0.25)" stroke="rgba(212,174,74,0.5)" stroke-width="0.8"/>
+    <polygon points="28,16 51,20 44,50 12,50 5,20" fill="rgba(184,150,46,0.08)" stroke="rgba(212,174,74,0.3)" stroke-width="0.6"/>
+    <circle cx="28" cy="28" r="4" fill="rgba(255,220,80,0.9)" stroke="rgba(255,245,150,0.7)" stroke-width="1"/>
+    <circle cx="28" cy="28" r="1.5" fill="white"/>
+  </svg>
+  <div class="ov-t" id="ovTxt">Updating…</div>
+</div>
 <div class="toast" id="toast"><div class="tdot ok" id="tdot"></div><span id="tmsg"></span></div>
 
 <!-- HOW TO USE MODAL -->
@@ -841,92 +852,91 @@ async function proxyPatchByFilter(jobNo, etag, body){
   const jn   = encodeURIComponent(jobNo);
   const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
 
-  // Always fetch fresh etag from EJWJobsRW (the writable page)
-  let freshEtag = '*';
+  // Step 1: fetch the record to get Item_No and Job_Type for composite key
+  let itemNo = '', jobType = 'Regular';
   try{
     const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
     if(gr.ok){
       const rec = (await gr.json()).value?.[0];
-      if(rec && rec['@odata.etag']){
-        freshEtag = rec['@odata.etag'];
-        addLog('info','Fresh etag fetched from EJWJobsRW', freshEtag.slice(0,30));
-      }
+      if(rec){ itemNo = rec.Item_No||''; jobType = rec.Job_Type||'Regular'; }
     }
   }catch(_){}
 
-  // Try EJWJobsRW with all key formats
+  const iN = encodeURIComponent(itemNo);
+  const jT = encodeURIComponent(jobType);
+
+  // Step 2: try all key formats — composite first then fallbacks
   const attempts = [
+    `${base}/EJWJobsRW(Item_No='${iN}',Job_No='${jn}',Job_Type='${jT}')`,
+    `${base}/EJWJobsRW(Job_No='${jn}',Item_No='${iN}',Job_Type='${jT}')`,
     `${base}/EJWJobsRW(Job_No='${jn}')`,
     `${base}/EJWJobsRW('${jn}')`,
-    `${base}/EJWJobsRW?$filter=Job_No eq '${jn}'`,
   ];
 
   let lastErr = 'All attempts failed';
   for(const url of attempts){
     try{
-      const r = await fetch(url, {
-        method : 'PATCH',
-        headers: {'Content-Type':'application/json', 'If-Match': '*'},
-        body   : JSON.stringify(body)
+      const r = await fetch(url,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','If-Match':'*'},
+        body:JSON.stringify(body)
       });
-      if(r.ok || r.status===204){
-        addLog('info','Thinkspace link PATCH succeeded',`Endpoint: ${url.split('/Company')[1]}`);
+      if(r.ok||r.status===204){
+        addLog('ok','Thinkspace link saved',`Key: ${url.split('(')[1]?.slice(0,40)}`);
         return r.status===204?{}:r.json();
       }
-      const txt = await r.text();
-      addLog('info',`PATCH attempt result`,`${url.split('/').pop().slice(0,30)} → ${r.status}: ${txt.slice(0,80)}`);
-      lastErr = `PATCH ${r.status}: ${txt.slice(0,200)}`;
-      if(r.status!==404 && r.status!==400 && r.status!==405) break;
-    }catch(e){ lastErr = e.message; }
+      const t = await r.text();
+      addLog('info',`PATCH ${r.status}`,`${url.split('/').pop().slice(0,40)} → ${t.slice(0,80)}`);
+      lastErr = `PATCH ${r.status}: ${t.slice(0,200)}`;
+      if(r.status!==404&&r.status!==400&&r.status!==405) break;
+    }catch(e){ lastErr=e.message; }
   }
   throw new Error(lastErr);
 }
 
 // Picture upload — tries EJWJWJobCard then JobCard
 async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
-  const co   = encodeURIComponent(CFG.COMPANY);
-  const jn   = encodeURIComponent(jobNo);
-  const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
+  const base       = CFG.WORKER_URL;
+  const jn         = encodeURIComponent(jobNo);
+  const COMPANY_ID = '98240263-32db-f011-95d1-002248791087';
+  const apiBase    = `${base}/api/hobrothers/cadportal/v1.0/companies(${COMPANY_ID})`;
+  const picField   = {1:'picture2',2:'picture3',3:'picture4',4:'picture4'}[slotIndex]||'picture2';
+  const pureB64    = b64.split(',')[1]||b64;
 
-  // Get fresh etag from EJWJobsRW
-  let freshEtag = '*';
-  try{
-    const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
-    if(gr.ok){
-      const rec = (await gr.json()).value?.[0];
-      if(rec && rec['@odata.etag']) freshEtag = rec['@odata.etag'];
-    }
-  }catch(_){}
+  const raw = atob(pureB64);
+  const arr = new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
+  const blob = new Blob([arr],{type:mime});
 
-  // Map slot to Picture field — slot 1=Picture_2, 2=Picture_3, 3=Picture_4, 4=Picture_4
-  const picField = {1:'Picture_2',2:'Picture_3',3:'Picture_4',4:'Picture_4'}[slotIndex]||'Picture_2';
-  const pureB64  = b64.split(',')[1] || b64;
-
-  // PATCH directly to EJWJobsRW — now has ModifyAllowed=true and Picture_2/3/4 fields
+  // Try all methods and paths
+  const key = `jobImages(jobNo='${jn}')`;
   const attempts = [
-    `${base}/EJWJobsRW(Job_No='${jn}')`,
-    `${base}/EJWJobsRW('${jn}')`,
+    {method:'PUT',  url:`${apiBase}/${key}/${picField}/$value`, ct:mime},
+    {method:'PUT',  url:`${apiBase}/${key}/${picField}`,        ct:mime},
+    {method:'PATCH',url:`${apiBase}/${key}/${picField}/$value`, ct:mime},
+    {method:'POST', url:`${apiBase}/${key}/${picField}`,        ct:mime},
   ];
 
-  let lastErr = '';
-  for(const url of attempts){
+  for(const a of attempts){
     try{
-      const r = await fetch(url, {
-        method : 'PATCH',
-        headers: {'Content-Type':'application/json', 'If-Match': '*'},
-        body   : JSON.stringify({ [picField]: pureB64 })
+      const r = await fetch(a.url,{
+        method:a.method,
+        headers:{'Content-Type':a.ct,'If-Match':'*'},
+        body:blob
       });
-      if(r.ok || r.status===204){
-        addLog('ok',`Picture saved to BC — ${picField}`,`Job: ${jobNo}`);
+      const t = await r.text();
+      addLog('info',`${a.method} ${r.status}`,`/${picField}${a.url.includes('$value')?'/$value':''} → ${t.slice(0,80)}`);
+      if(r.ok||r.status===204){
+        addLog('ok',`Image uploaded — ${picField}`,`Job: ${jobNo}`);
         return {};
       }
-      const t = await r.text();
-      addLog('info',`PATCH ${url.split('/').pop().slice(0,25)}`,`${r.status}: ${t.slice(0,100)}`);
-      lastErr = `${r.status}: ${t.slice(0,150)}`;
-      if(r.status!==404 && r.status!==400 && r.status!==405) break;
-    }catch(e){ lastErr = e.message; }
+    }catch(e){ addLog('info',`${a.method} error`,e.message); }
   }
-  throw new Error(`Picture upload failed — ${lastErr}`);
+
+  // Final fallback — tell user to upload via BC Additional Images button
+  addLog('info',`Image saved locally for ${jobNo}`,
+    `BC does not support direct MediaSet upload via API. Open job in BC → click "Additional Images" to upload manually.`);
+  return {localOnly:true};
 }
 
 // ── OVERLAY / TOAST ───────────────────────────
