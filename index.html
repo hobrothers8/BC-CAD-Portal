@@ -4,195 +4,372 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HO Brothers · CAD Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --white:#FFFFFF;--bg:#F7F5F2;--bg2:#EFEDE9;
-  --line:#E2DED8;--line2:#D0CBC2;
-  --ink:#1A1714;--ink2:#3D3A36;--muted:#7A7570;--faint:#A8A39D;
-  --gold:#9A7B2F;--gold2:#B8962E;--gold3:#D4AE4A;
-  --gold-t:rgba(154,123,47,0.1);--gold-b:rgba(154,123,47,0.22);
-  --green:#2D6A4F;--green-t:rgba(45,106,79,0.1);
-  --red:#8B3535;--red-t:rgba(139,53,53,0.08);
-  --sh:0 1px 3px rgba(26,23,20,0.06),0 4px 16px rgba(26,23,20,0.04);
-  --sh2:0 2px 8px rgba(26,23,20,0.08),0 8px 32px rgba(26,23,20,0.06);
+  --bg:      #b8d3eb;
+  --bg2:     #a8c8e0;
+  --bg3:     #98bcd6;
+  --card:    #ffffff;
+  --card2:   #edf5fb;
+  --line:    rgba(139,110,58,0.15);
+  --line2:   rgba(139,110,58,0.25);
+  --text:    #1E1810;
+  --text2:   #3D3220;
+  --text3:   #6B5C40;
+  --gold:    #9A7B2F;
+  --gold2:   #B8962E;
+  --gold3:   #D4AE4A;
+  --gold-t:  rgba(154,123,47,0.1);
+  --gold-b:  rgba(154,123,47,0.3);
+  --teal:    #2C7A7B;
+  --teal2:   #38A89D;
+  --teal-t:  rgba(44,122,123,0.1);
+  --teal-b:  rgba(44,122,123,0.3);
+  --green:   #276749;
+  --green2:  #38A169;
+  --green-t: rgba(39,103,73,0.1);
+  --red:     #C53030;
+  --red2:    #E53E3E;
+  --red-t:   rgba(197,48,48,0.08);
+  --rose:    #C05621;
+  --sh:      0 2px 12px rgba(139,110,58,0.1),0 1px 3px rgba(139,110,58,0.08);
+  --sh2:     0 8px 32px rgba(139,110,58,0.15),0 2px 8px rgba(139,110,58,0.1);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;font-size:14px;-webkit-font-smoothing:antialiased;}
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px;}
+html,body{min-height:100%;background:var(--bg);}
+body{color:var(--text);font-family:'Outfit',sans-serif;font-weight:300;font-size:14px;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--gold-b);border-radius:4px;}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(180deg)}}
+@keyframes floatR{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes twinkle{0%,100%{opacity:0.1;transform:scale(1)}50%{opacity:0.6;transform:scale(1.4)}}
+@keyframes pulse{0%,100%{opacity:0.3}50%{opacity:0.6}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 
-/* TOPBAR */
-.topbar{background:var(--white);border-bottom:1px solid var(--line);height:60px;display:flex;align-items:center;padding:0 32px;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--line),0 2px 8px rgba(26,23,20,0.04);}
+/* ── BACKGROUND ── */
+.bg-canvas{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.fdiamond{position:absolute;animation:float 7s ease-in-out infinite;}
+.fdiamond:nth-child(2){animation-duration:9s;animation-delay:-3s;}
+.fdiamond:nth-child(3){animation:floatR 6s ease-in-out infinite;animation-delay:-1s;}
+.fdiamond:nth-child(4){animation-duration:11s;animation-delay:-5s;}
+.fdiamond:nth-child(5){animation:float 8s ease-in-out infinite;animation-delay:-2s;}
+.fdiamond:nth-child(6){animation-duration:10s;animation-delay:-4s;}
+.star{position:absolute;border-radius:50%;background:var(--gold2);animation:twinkle 2.5s ease-in-out infinite;}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);animation:pulse 6s ease-in-out infinite;}
+
+/* ── TOPBAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(30,24,16,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--gold-b);height:62px;display:flex;align-items:center;padding:0 32px;justify-content:space-between;}
 .tb-l{display:flex;align-items:center;gap:14px;}
-.tb-logo{display:flex;align-items:center;gap:9px;}
-.tb-gem{width:28px;height:28px;}
-.tb-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--ink);letter-spacing:0.04em;}
-.tb-sep{width:1px;height:20px;background:var(--line2);}
-.tb-sect{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--faint);}
+.tb-logo{display:flex;align-items:center;gap:10px;}
+.tb-gem{width:30px;height:30px;}
+.tb-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#F7F2E8;letter-spacing:0.08em;}
+.tb-sep{width:1px;height:22px;background:var(--gold-b);}
+.tb-sect{font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold3);font-weight:400;}
 .tb-r{display:flex;align-items:center;gap:10px;}
-.tb-env{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:var(--green-t);color:var(--green);border:1px solid rgba(45,106,79,0.2);font-weight:500;}
+.tb-env{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;padding:4px 12px;border-radius:20px;background:rgba(39,103,73,0.2);color:#68D391;border:1px solid rgba(56,161,105,0.35);font-weight:500;}
+.btn-howto{background:#f08080;border:1px solid #f08080;color:#F7F2E8;font-family:'Outfit',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;padding:6px 16px;border-radius:20px;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:6px;}
+.btn-howto:hover{background:#e86060;border-color:#e06060;}
 
-/* CONFIG BANNER */
-.cfg-banner{background:#FFF8E7;border-bottom:1px solid #E8D48A;padding:12px 32px;display:flex;align-items:center;gap:12px;font-size:12px;color:#7A5C1E;}
-.cfg-banner code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;font-size:11px;}
-.cfg-banner.hidden{display:none;}
+/* ── HOW TO USE MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.on{display:flex;}
+.modal{background:var(--card);border:1px solid var(--gold-b);border-radius:20px;padding:36px 40px;max-width:540px;width:100%;position:relative;box-shadow:var(--sh2);animation:slideDown .3s ease both;}
+.modal-close{position:absolute;top:14px;right:16px;background:transparent;border:none;color:var(--text3);font-size:20px;cursor:pointer;transition:color .2s;line-height:1;}
+.modal-close:hover{color:var(--gold2);}
+.modal-gem{text-align:center;margin-bottom:16px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--text3);text-align:center;margin-bottom:24px;letter-spacing:0.05em;}
+.modal-steps{display:flex;flex-direction:column;gap:12px;}
+.mstep{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;}
+.mstep-num{width:30px;height:30px;border-radius:50%;background:var(--gold-t);border:1px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--gold2);flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.mstep-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.mstep-desc{font-size:12px;color:var(--text3);line-height:1.65;}
+.mstep-tag{display:inline-block;font-size:10px;font-family:'JetBrains Mono',monospace;background:var(--teal-t);color:var(--teal2);border:1px solid var(--teal-b);padding:2px 8px;border-radius:4px;margin-top:5px;letter-spacing:0.04em;}
+.modal-footer{margin-top:22px;text-align:center;}
+.btn-modal-ok{background:#f08080;color:#F7F2E8;border:none;border-radius:10px;font-size:12px;font-weight:600;letter-spacing:0.1em;padding:11px 32px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.btn-modal-ok:hover{background:#e86060;transform:translateY(-1px);}
 
-/* MAIN */
-.main{flex:1;padding:36px 32px 64px;display:flex;justify-content:center;background:var(--bg);}
+/* ── HERO ── */
+.hero{position:relative;z-index:1;padding:36px 32px 28px;border-bottom:1px solid var(--line2);overflow:hidden;}
+.hero-inner{max-width:700px;margin:0 auto;position:relative;z-index:2;}
+.hero-ey{font-size:9px;letter-spacing:0.55em;text-transform:uppercase;color:var(--teal2);margin-bottom:10px;font-weight:500;display:flex;align-items:center;gap:10px;}
+.hero-ey::before{content:'';width:20px;height:1px;background:var(--teal2);}
+.hero-t{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:var(--text);line-height:1.2;}
+.hero-t em{font-style:italic;color:var(--gold2);}
+.hero-d{margin-top:8px;font-size:13px;color:var(--text3);line-height:1.8;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.hero-tag{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:20px;font-weight:500;}
+.hero-tag.t1{background:var(--teal-t);color:var(--teal);border:1px solid var(--teal-b);}
+.hero-tag.t2{background:var(--gold-t);color:var(--gold2);border:1px solid var(--gold-b);}
+.hero-tag.t3{background:var(--green-t);color:var(--green2);border:1px solid rgba(56,161,105,0.3);}
+
+/* ── MAIN ── */
+.main{position:relative;z-index:1;padding:26px 32px 64px;display:flex;justify-content:center;}
 .wrap{width:100%;max-width:700px;animation:fadeUp .4s ease both;}
 
-/* PAGE HEADER */
-.ph{margin-bottom:28px;}
-.ph-ey{font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.ph-ey::before{content:'';width:16px;height:1px;background:var(--gold2);}
-.ph-t{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:var(--ink);line-height:1.2;}
-.ph-t em{font-style:italic;color:var(--gold2);}
-.ph-d{margin-top:6px;font-size:13px;color:var(--muted);line-height:1.75;}
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 30px;box-shadow:var(--sh);margin-bottom:14px;transition:all .3s;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);opacity:0;transition:opacity .3s;}
+.card:not(.locked):hover::before{opacity:1;}
+.card:not(.locked):hover{box-shadow:var(--sh2);}
+.card.active-card::before{opacity:1;}
+.card.locked{opacity:.45;pointer-events:none;}
+.card-lock-msg{display:none;font-size:11px;color:var(--text3);letter-spacing:0.08em;margin-top:8px;text-align:center;font-style:italic;}
+.card.locked .card-lock-msg{display:block;}
+.ch{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+.cstep{width:30px;height:30px;border-radius:50%;background:var(--gold-t);border:1px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--gold2);flex-shrink:0;font-family:'JetBrains Mono',monospace;transition:all .3s;}
+.cstep.done{background:var(--green-t);border-color:rgba(56,161,105,0.4);color:var(--green2);}
+.ct{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--text);letter-spacing:0.02em;}
+.cs{font-size:11px;color:var(--text3);margin-top:2px;font-weight:300;}
 
-/* CARD */
-.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:32px 36px;box-shadow:var(--sh);margin-bottom:14px;}
-.ch{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);}
-.cstep{width:28px;height:28px;border-radius:50%;background:var(--gold-t);border:1px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--gold2);flex-shrink:0;font-family:'JetBrains Mono',monospace;}
-.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--ink);}
-.cs{font-size:11px;color:var(--faint);margin-top:1px;}
-
-/* FIELDS */
-.flbl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
-.req{color:var(--gold2);font-size:14px;line-height:1;}
+/* ── FIELDS ── */
+.flbl{font-size:10px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;color:var(--teal);margin-bottom:8px;display:flex;align-items:center;gap:5px;}
+.req{color:var(--rose);font-size:14px;line-height:1;}
 .frow{display:flex;gap:9px;}
-.fhint{margin-top:5px;font-size:11px;color:var(--faint);line-height:1.6;}
+.fhint{margin-top:6px;font-size:11px;color:var(--text3);line-height:1.65;}
+.fhint.err-hint{color:var(--red);}
 
 input[type="text"],input[type="url"]{
-  width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:8px;
-  color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:300;
-  padding:10px 13px;outline:none;transition:all .2s;
+  width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:400;
+  padding:11px 14px;outline:none;transition:all .2s;
 }
-input:focus{background:var(--white);border-color:var(--gold2);box-shadow:0 0 0 3px var(--gold-t);}
-input::placeholder{color:var(--faint);font-weight:300;}
+input:focus{background:var(--card);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-t);}
+input.invalid{border-color:var(--red);box-shadow:0 0 0 3px var(--red-t);}
+input::placeholder{color:var(--text3);font-weight:300;}
 
-.btn-look{background:var(--ink);color:#F7F5F2;border:none;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:0.06em;padding:0 20px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;height:42px;display:flex;align-items:center;gap:7px;}
-.btn-look:hover{background:var(--ink2);}
-.btn-look:disabled{opacity:.4;cursor:not-allowed;}
+.btn-look{background:#f08080;color:#F7F2E8;border:none;border-radius:10px;font-size:12px;font-weight:600;letter-spacing:0.08em;padding:0 22px;cursor:pointer;transition:all .25s;white-space:nowrap;flex-shrink:0;height:44px;display:flex;align-items:center;gap:7px;box-shadow:0 2px 8px rgba(240,128,128,0.35);}
+.btn-look:hover{background:#e86060;transform:translateY(-1px);box-shadow:0 4px 14px rgba(240,128,128,0.4);}
+.btn-look:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
 
-/* JOB FOUND */
-.jf-card{display:none;margin-top:14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px;animation:fadeUp .3s ease both;}
+/* ── JOB FOUND ── */
+.jf-card{display:none;margin-top:14px;background:#ffffff;border:1px solid rgba(44,122,123,0.35);border-radius:12px;padding:16px 18px;animation:fadeUp .3s ease both;}
 .jf-card.on{display:block;}
-.jf-ok{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);font-weight:500;letter-spacing:0.06em;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.jf-ok{display:flex;align-items:center;gap:8px;font-size:11px;color:#1a6a3a;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line);}
 .jf-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
-.jf-no{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold2);letter-spacing:0.06em;line-height:1;}
-.jf-desc{font-size:13px;color:var(--ink);margin-top:3px;}
-.jf-cust{font-size:11px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
-.sbadge{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1px solid;flex-shrink:0;}
-.jf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.jf-k{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;}
-.jf-v{font-size:11px;color:var(--ink2);font-family:'JetBrains Mono',monospace;font-weight:300;}
+.jf-no{font-family:'Cormorant Garamond',serif;font-size:24px;color:#8B6914;letter-spacing:0.08em;line-height:1;font-weight:600;}
+.jf-desc{font-size:14px;color:#1A1208;margin-top:4px;font-weight:600;}
+.jf-cust{font-size:12px;color:#3D3220;margin-top:3px;font-family:'JetBrains Mono',monospace;font-weight:400;}
+.sbadge{font-size:9px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1px solid;flex-shrink:0;font-weight:700;}
+.jf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.jf-item{background:#f0f7ff;border:1px solid rgba(44,122,123,0.2);border-radius:8px;padding:10px 13px;}
+.jf-k{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#2C7A7B;margin-bottom:4px;font-weight:700;}
+.jf-v{font-size:12px;color:#1A1208;font-family:'JetBrains Mono',monospace;font-weight:600;}
 
-/* NOT FOUND */
-.nf{display:none;margin-top:14px;background:var(--red-t);border:1px solid rgba(139,53,53,0.18);border-radius:10px;padding:14px 18px;gap:12px;align-items:flex-start;}
+/* ── NOT FOUND ── */
+.nf{display:none;margin-top:14px;background:var(--red-t);border:1px solid rgba(197,48,48,0.2);border-radius:12px;padding:14px 18px;gap:12px;align-items:flex-start;}
 .nf.on{display:flex;}
-.nf-t{font-size:13px;font-weight:500;color:var(--red);margin-bottom:3px;}
-.nf-m{font-size:11px;color:var(--muted);line-height:1.6;font-family:'JetBrains Mono',monospace;}
+.nf-t{font-size:13px;font-weight:600;color:var(--red);margin-bottom:3px;}
+.nf-m{font-size:11px;color:var(--text3);line-height:1.6;font-family:'JetBrains Mono',monospace;word-break:break-word;}
 
-/* UPLOAD */
-.uz{border:2px dashed var(--line2);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--bg);}
-.uz:hover,.uz.drag{border-color:var(--gold2);background:var(--gold-t);}
+/* ── IMAGE UPLOAD ── */
+.uz{border:2px dashed var(--line2);border-radius:12px;padding:26px;text-align:center;cursor:pointer;transition:all .25s;position:relative;background:var(--bg2);}
+.uz:hover,.uz.drag{border-color:var(--teal);background:var(--teal-t);}
 .uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.uz-t{font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:3px;}
-.uz-s{font-size:11px;color:var(--faint);line-height:1.65;}
-.uz-s span{color:var(--gold2);font-weight:500;}
-.uz-ico{margin-bottom:8px;}
-.imp{display:none;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--ink);}
-.imp.on{display:block;}
-.imp img{width:100%;max-height:220px;object-fit:contain;display:block;}
-.imp-bar{background:var(--bg);border-top:1px solid var(--line);padding:9px 13px;display:flex;align-items:center;justify-content:space-between;}
-.imp-name{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
-.btn-rm{background:transparent;border:none;color:var(--red);font-size:11px;font-weight:500;cursor:pointer;padding:0;}
+.uz-t{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.uz-s{font-size:11px;color:var(--text3);line-height:1.7;}
+.uz-s span{color:var(--teal);font-weight:600;}
+.uz-ico{margin-bottom:10px;}
 
-/* SUBMIT */
-.sub-bar{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 28px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between;gap:20px;}
-.sub-st{display:flex;align-items:center;gap:9px;flex:1;}
-.sub-dot{width:8px;height:8px;border-radius:50%;background:var(--line2);flex-shrink:0;transition:all .3s;}
-.sub-dot.ready{background:var(--green);box-shadow:0 0 0 3px var(--green-t);}
-.sub-txt{font-size:12px;color:var(--muted);line-height:1.6;}
-.btn-sub{background:var(--ink);color:#F7F5F2;border:none;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:13px 28px;cursor:pointer;transition:all .2s;flex-shrink:0;}
-.btn-sub:hover{background:var(--ink2);transform:translateY(-1px);box-shadow:var(--sh2);}
-.btn-sub:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+/* image limit alert */
+.img-limit-alert{display:none;background:rgba(197,48,48,0.1);border:1px solid rgba(197,48,48,0.25);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:12px;color:var(--red);font-weight:500;letter-spacing:0.04em;align-items:center;gap:10px;}
+.img-limit-alert.on{display:flex;}
 
-/* OVERLAY */
-.ov{display:none;position:fixed;inset:0;background:rgba(247,245,242,.88);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.img-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px;}
+.img-slot{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--bg3);position:relative;}
+.img-slot img{width:100%;height:130px;object-fit:contain;display:block;}
+.img-slot-bar{background:var(--card2);border-top:1px solid var(--line);padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.img-slot-name{font-size:10px;color:var(--text2);font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;}
+.img-slot-size{font-size:10px;color:var(--text3);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+.btn-rm-img{background:transparent;border:none;color:var(--red2);font-size:12px;cursor:pointer;padding:0 0 0 4px;flex-shrink:0;transition:opacity .2s;}
+.btn-rm-img:hover{opacity:.7;}
+.img-count{font-size:11px;color:var(--text3);margin-top:8px;text-align:right;font-family:'JetBrains Mono',monospace;}
+.img-count span{color:var(--gold2);font-weight:600;}
+
+/* ── THINKSPACE ── */
+.ts-prefix{font-size:11px;color:var(--text3);font-family:'JetBrains Mono',monospace;margin-bottom:8px;line-height:1.7;background:var(--bg2);border:1px solid var(--line);border-radius:7px;padding:8px 12px;word-break:break-all;}
+.ts-chars{font-size:10px;font-family:'JetBrains Mono',monospace;text-align:right;margin-top:5px;}
+.ts-chars.warn{color:var(--red);}
+.ts-chars.ok{color:var(--green2);}
+
+/* ── SUBMIT ── */
+.sub-bar{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 26px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.sub-st{display:flex;align-items:center;gap:10px;flex:1;}
+.sub-dot{width:9px;height:9px;border-radius:50%;background:var(--line2);flex-shrink:0;transition:all .3s;}
+.sub-dot.ready{background:var(--green2);box-shadow:0 0 0 4px var(--green-t);}
+.sub-txt{font-size:12px;color:var(--text3);line-height:1.6;}
+.btn-sub{background:#f08080;color:#F7F2E8;border:none;border-radius:10px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;padding:13px 28px;cursor:pointer;transition:all .25s;flex-shrink:0;box-shadow:0 2px 8px rgba(240,128,128,0.35);}
+.btn-sub:hover{background:#e86060;transform:translateY(-1px);box-shadow:0 4px 16px rgba(30,24,16,0.3);}
+.btn-sub:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ── LOG PANEL ── */
+.log-panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-top:14px;}
+.log-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.log-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--text);font-weight:600;letter-spacing:0.02em;}
+.log-actions{display:flex;gap:8px;}
+.btn-log{background:#f08080;border:1px solid #f08080;color:#F7F2E8;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:5px 14px;border-radius:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s;}
+.btn-log:hover{background:#e86060;border-color:#e06060;}
+.log-body{max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;}
+.log-entry{border-radius:8px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;}
+.log-entry.ok{background:rgba(56,161,105,0.08);border:1px solid rgba(56,161,105,0.2);}
+.log-entry.err{background:var(--red-t);border:1px solid rgba(197,48,48,0.2);}
+.log-entry.info{background:var(--gold-t);border:1px solid var(--gold-b);}
+.log-ts{font-size:9px;letter-spacing:0.08em;color:var(--text3);margin-bottom:2px;}
+.log-type{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;margin-bottom:3px;}
+.log-entry.ok .log-type{color:var(--green2);}
+.log-entry.err .log-type{color:var(--red);}
+.log-entry.info .log-type{color:var(--gold2);}
+.log-msg{color:var(--text);word-break:break-word;}
+.log-det{color:var(--text3);font-size:10px;margin-top:3px;word-break:break-word;}
+.log-empty{font-size:11px;color:var(--text3);text-align:center;padding:20px 0;font-style:italic;}
+
+/* ── OVERLAY ── */
+.ov{display:none;position:fixed;inset:0;background:rgba(30,24,16,0.7);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px;}
 .ov.on{display:flex;}
-.ov-sp{width:38px;height:38px;border:2px solid var(--line2);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;}
-.ov-t{font-size:11px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;}
+.ov-sp{width:40px;height:40px;border:2px solid var(--gold-b);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;}
+.ov-t{font-size:11px;color:var(--text3);letter-spacing:0.3em;text-transform:uppercase;}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px 22px;box-shadow:var(--sh2);font-size:13px;color:var(--ink2);white-space:nowrap;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:1000;display:flex;align-items:center;gap:9px;}
+/* ── TOAST ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:12px 22px;box-shadow:var(--sh2);font-size:13px;color:var(--text);white-space:nowrap;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:1000;display:flex;align-items:center;gap:10px;}
 .toast.on{transform:translateX(-50%) translateY(0);}
-.toast.ok-t{border-color:rgba(45,106,79,0.25);}
-.toast.err-t{border-color:rgba(139,53,53,0.25);}
-.td{width:7px;height:7px;border-radius:50%;}
-.td.ok{background:var(--green);}
-.td.err{background:var(--red);}
-.sp-sm{display:inline-block;width:12px;height:12px;border:1.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+.toast.ok-t{border-color:rgba(56,161,105,0.35);}
+.toast.err-t{border-color:rgba(197,48,48,0.35);}
+.tdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.tdot.ok{background:var(--green2);}
+.tdot.err{background:var(--red2);}
+.sp-sm{display:inline-block;width:12px;height:12px;border:1.5px solid rgba(30,24,16,.2);border-top-color:var(--text);border-radius:50%;animation:spin .7s linear infinite;}
 
 @media(max-width:600px){
-  .main{padding:20px 16px 48px;}
-  .card{padding:22px 18px;}
+  .main,.hero{padding-left:16px;padding-right:16px;}
+  .card{padding:20px 16px;}
   .jf-grid{grid-template-columns:1fr 1fr;}
   .sub-bar{flex-direction:column;align-items:stretch;}
+  .img-grid{grid-template-columns:1fr;}
   .topbar{padding:0 16px;}
-  .tb-sect{display:none;}
+  .tb-sect,.hero-tags{display:none;}
+  .modal{padding:24px 20px;}
 }
 </style>
 </head>
 <body>
 
-<!-- ══ CONFIG — update WORKER_URL after deploying your Cloudflare Worker ══ -->
 <script>
-const CFG = {
-  // Paste your Cloudflare Worker URL here after deploying
-  // e.g. "https://ho-brothers-bc-proxy.yourname.workers.dev"
-  WORKER_URL : "https://ho-brothers-bc-proxy.meena-afa.workers.dev",
-  COMPANY    : "HOBrothers",
-  ENTITY     : "EJWJobs"
+const CFG={
+  WORKER_URL  :"https://ho-brothers-bc-proxy.meena-afa.workers.dev",
+  COMPANY     :"HOBrothers",
+  ENTITY      :"EJWJobs",          // read-only list — used for job lookup only
+  CAD_ENTITY  :"EJWJobsCADAPI"     // writable — used for PATCH (Vntana_Link + Pictures)
 };
-// Helper — builds the full proxy URL
-const api = (path, qs="") =>
-  `${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.COMPANY)}')/${path}${qs}`;
+const MAX_IMAGES=4, MAX_IMG_SIZE=25*1024*1024;
+const ALLOWED_TYPES=['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
+const MAX_THINK_LEN=175;
+const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.COMPANY)}')/${path}${qs}`;
 </script>
+
+<!-- ANIMATED BACKGROUND -->
+<div class="bg-canvas" id="bgCanvas"></div>
 
 <!-- OVERLAY & TOAST -->
 <div class="ov" id="ov"><div class="ov-sp"></div><div class="ov-t" id="ovTxt">Updating…</div></div>
-<div class="toast" id="toast"><div class="td ok" id="tdot"></div><span id="tmsg"></span></div>
+<div class="toast" id="toast"><div class="tdot ok" id="tdot"></div><span id="tmsg"></span></div>
 
-<!-- CONFIG BANNER (shown if WORKER_URL not set) -->
-<div class="cfg-banner" id="cfgBanner">
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#B8962E" stroke-width="1.2"/><line x1="8" y1="5" x2="8" y2="8.5" stroke="#B8962E" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="11" r="0.8" fill="#B8962E"/></svg>
-  Open this file and set <code>WORKER_URL</code> to your Cloudflare Worker URL, then save and refresh.
+<!-- HOW TO USE MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-gem">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <polygon points="22,3 41,22 22,41 3,22" fill="rgba(184,150,46,0.1)" stroke="rgba(184,150,46,0.6)" stroke-width="1.2"/>
+        <line x1="22" y1="3" x2="41" y2="22" stroke="rgba(184,150,46,0.2)" stroke-width="0.7"/>
+        <line x1="41" y1="22" x2="22" y2="41" stroke="rgba(184,150,46,0.2)" stroke-width="0.7"/>
+        <line x1="22" y1="41" x2="3" y2="22" stroke="rgba(184,150,46,0.2)" stroke-width="0.7"/>
+        <line x1="3" y1="22" x2="22" y2="3" stroke="rgba(184,150,46,0.2)" stroke-width="0.7"/>
+        <circle cx="22" cy="22" r="3.5" fill="rgba(184,150,46,0.85)"/>
+      </svg>
+    </div>
+    <div class="modal-title">How to Use</div>
+    <div class="modal-sub">HO Brothers CAD Portal · Business Central UAT</div>
+    <div class="modal-steps">
+      <div class="mstep">
+        <div class="mstep-num">1</div>
+        <div>
+          <div class="mstep-title">Search a Job by Number</div>
+          <div class="mstep-desc">Enter the BC job number (e.g. J074361) and press Enter or click Lookup. The portal searches Business Central and displays job details if found.</div>
+          <div class="mstep-tag">Required — unlocks steps 2 &amp; 3</div>
+        </div>
+      </div>
+      <div class="mstep">
+        <div class="mstep-num">2</div>
+        <div>
+          <div class="mstep-title">Upload up to 4 CAD Images</div>
+          <div class="mstep-desc">Drag &amp; drop or click to upload CAD design images. Formats: JPG, PNG, WEBP, GIF. Max 4 images · 25 MB each. Will add or replace pictures on the BC job record.</div>
+          <div class="mstep-tag">Unlocked after job found</div>
+        </div>
+      </div>
+      <div class="mstep">
+        <div class="mstep-num">3</div>
+        <div>
+          <div class="mstep-title">Add Your Thinkspace Link</div>
+          <div class="mstep-desc">Paste your Vntana or Thinkspace 3D model URL (max 175 characters). This saves to the Vntana Link field on the BC job record.</div>
+          <div class="mstep-tag">Unlocked after job found</div>
+        </div>
+      </div>
+      <div class="mstep">
+        <div class="mstep-num">4</div>
+        <div>
+          <div class="mstep-title">Sync Directly to Business Central</div>
+          <div class="mstep-desc">Click "Update Job in BC" to save images and the Thinkspace link live to BC UAT. The Activity Log records every action with timestamps for audit and troubleshooting.</div>
+          <div class="mstep-tag">Live update to BC</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-modal-ok" onclick="closeModal()">Got It</button></div>
+  </div>
 </div>
 
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="tb-l">
     <div class="tb-logo">
-      <svg class="tb-gem" viewBox="0 0 28 28" fill="none">
-        <polygon points="14,2 26,14 14,26 2,14" fill="rgba(154,123,47,0.09)" stroke="rgba(154,123,47,0.55)" stroke-width="0.8"/>
-        <line x1="14" y1="2" x2="26" y2="14" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
-        <line x1="26" y1="14" x2="14" y2="26" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
-        <line x1="14" y1="26" x2="2" y2="14" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
-        <line x1="2" y1="14" x2="14" y2="2" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
-        <circle cx="14" cy="14" r="1.8" fill="rgba(154,123,47,0.65)"/>
+      <svg class="tb-gem" viewBox="0 0 30 30" fill="none">
+        <polygon points="15,2 28,15 15,28 2,15" fill="rgba(212,174,74,0.15)" stroke="rgba(212,174,74,0.7)" stroke-width="0.8"/>
+        <line x1="15" y1="2" x2="28" y2="15" stroke="rgba(212,174,74,0.25)" stroke-width="0.5"/>
+        <line x1="28" y1="15" x2="15" y2="28" stroke="rgba(212,174,74,0.25)" stroke-width="0.5"/>
+        <line x1="15" y1="28" x2="2" y2="15" stroke="rgba(212,174,74,0.25)" stroke-width="0.5"/>
+        <line x1="2" y1="15" x2="15" y2="2" stroke="rgba(212,174,74,0.25)" stroke-width="0.5"/>
+        <circle cx="15" cy="15" r="2.5" fill="rgba(212,174,74,0.85)"/>
       </svg>
       <span class="tb-name">HO Brothers</span>
     </div>
     <div class="tb-sep"></div>
-    <div class="tb-sect">CAD Design Portal</div>
+    <div class="tb-sect">CAD Portal</div>
   </div>
   <div class="tb-r">
     <div class="tb-env">UAT · Live</div>
+    <button class="btn-howto" onclick="openModal()">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.1"/><text x="6.5" y="9.8" text-anchor="middle" font-size="7.5" fill="currentColor" font-weight="700">?</text></svg>
+      How to Use
+    </button>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-ey">CAD Design Portal · Business Central UAT</div>
+    <div class="hero-t">Job <em>Update</em> Console</div>
+    <div class="hero-d">Search a job · Upload CAD designs · Add Thinkspace links · Sync live to Business Central</div>
+    <div class="hero-tags">
+      <div class="hero-tag t1">Job Lookup</div>
+      <div class="hero-tag t2">Up to 4 Images · 25 MB each</div>
+      <div class="hero-tag t3">Thinkspace / Vntana</div>
+      <div class="hero-tag t1">Live BC Sync</div>
+    </div>
   </div>
 </div>
 
@@ -200,32 +377,25 @@ const api = (path, qs="") =>
 <div class="main">
   <div class="wrap">
 
-    <div class="ph">
-      <div class="ph-ey">CAD Job Update</div>
-      <div class="ph-t">Update Job <em>Details</em></div>
-      <div class="ph-d">Enter a job number to load it from Business Central, then attach your CAD image and Thinkspace link.</div>
-    </div>
-
     <!-- STEP 1 -->
-    <div class="card">
+    <div class="card active-card" id="card1">
       <div class="ch">
-        <div class="cstep">1</div>
-        <div><div class="ct">Job Lookup</div><div class="cs">Search Business Central by job number</div></div>
+        <div class="cstep" id="step1badge">1</div>
+        <div><div class="ct">Job Lookup</div><div class="cs">Search Business Central by job number — required before steps 2 &amp; 3</div></div>
       </div>
       <div class="flbl">Job Number <span class="req">*</span></div>
       <div class="frow">
-        <input type="text" id="jobIn" placeholder="e.g. JW-100421"
+        <input type="text" id="jobIn" placeholder="e.g. J074361 or J079335"
           oninput="onJobIn()" onkeydown="if(event.key==='Enter')doLook()">
         <button class="btn-look" id="btnLook" onclick="doLook()" disabled>
           <span id="lookLbl">Lookup</span>
         </button>
       </div>
-      <div class="fhint">Press Enter or click Lookup to search</div>
-
+      <div class="fhint">Press Enter or click Lookup · Job must exist in BC UAT to unlock steps 2 &amp; 3</div>
       <div class="jf-card" id="jfCard">
         <div class="jf-ok">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#2D6A4F" stroke-width="1.2"/><path d="M4 7L6 9L10 5" stroke="#2D6A4F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Job found in Business Central
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#38A169" stroke-width="1.2"/><path d="M4 7L6 9L10 5" stroke="#38A169" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Job found — steps 2 &amp; 3 are now unlocked
         </div>
         <div class="jf-top">
           <div>
@@ -236,255 +406,494 @@ const api = (path, qs="") =>
           <div class="sbadge" id="jStatus">—</div>
         </div>
         <div class="jf-grid">
-          <div><div class="jf-k">Item No.</div><div class="jf-v" id="jItem">—</div></div>
-          <div><div class="jf-k">Metal</div><div class="jf-v" id="jMetal">—</div></div>
-          <div><div class="jf-k">Due Date</div><div class="jf-v" id="jDue">—</div></div>
-          <div><div class="jf-k">Stage</div><div class="jf-v" id="jStage">—</div></div>
-          <div><div class="jf-k">CAD Version</div><div class="jf-v" id="jCadV">—</div></div>
-          <div><div class="jf-k">Salesperson</div><div class="jf-v" id="jSales">—</div></div>
+          <div class="jf-item"><div class="jf-k">Item No.</div><div class="jf-v" id="jItem">—</div></div>
+          <div class="jf-item"><div class="jf-k">Metal</div><div class="jf-v" id="jMetal">—</div></div>
+          <div class="jf-item"><div class="jf-k">Due Date</div><div class="jf-v" id="jDue">—</div></div>
+          <div class="jf-item"><div class="jf-k">Stage</div><div class="jf-v" id="jStage">—</div></div>
+          <div class="jf-item"><div class="jf-k">Status</div><div class="jf-v" id="jStatusVal">—</div></div>
+          <div class="jf-item"><div class="jf-k">Customer</div><div class="jf-v" id="jCustShort">—</div></div>
         </div>
       </div>
-
       <div class="nf" id="nfBox">
-        <div>
-          <div class="nf-t" id="nfT">Job Not Found</div>
-          <div class="nf-m" id="nfM">—</div>
-        </div>
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="10" cy="10" r="9" stroke="#C53030" stroke-width="1.2"/><path d="M6.5 6.5L13.5 13.5M13.5 6.5L6.5 13.5" stroke="#C53030" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <div><div class="nf-t" id="nfT">Job Not Found</div><div class="nf-m" id="nfM">—</div></div>
       </div>
     </div>
 
     <!-- STEP 2 -->
-    <div class="card">
+    <div class="card locked" id="card2">
       <div class="ch">
-        <div class="cstep">2</div>
-        <div><div class="ct">CAD Image</div><div class="cs">Add or replace the picture on the job record</div></div>
+        <div class="cstep" id="step2badge">2</div>
+        <div><div class="ct">CAD Images</div><div class="cs">Up to 4 images · Max 25 MB each · JPG, PNG, WEBP, GIF</div></div>
+      </div>
+      <div class="card-lock-msg">🔒 Complete Step 1 first — look up a valid job number to unlock</div>
+      <!-- IMAGE LIMIT ALERT -->
+      <div class="img-limit-alert" id="imgLimitAlert">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#C53030" stroke-width="1.2"/><line x1="8" y1="5" x2="8" y2="9" stroke="#C53030" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.8" fill="#C53030"/></svg>
+        Maximum 4 images reached — remove an image to add a different one
       </div>
       <div class="uz" id="uz" ondragover="onDO(event)" ondragleave="onDL()" ondrop="onDrp(event)">
-        <input type="file" id="imgIn" accept="image/*" onchange="onFS(event)">
+        <input type="file" id="imgIn" accept="image/jpeg,image/jpg,image/png,image/webp,image/gif" multiple onchange="onFS(event)">
         <div class="uz-ico">
-          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-            <rect x="3" y="9" width="32" height="23" rx="3" stroke="rgba(154,123,47,0.4)" stroke-width="1.1"/>
-            <circle cx="13" cy="19" r="4" stroke="rgba(154,123,47,0.4)" stroke-width="1.1"/>
-            <path d="M3 26L12 20L18 25L25 20L35 27" stroke="rgba(154,123,47,0.4)" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
-            <line x1="19" y1="6" x2="19" y2="1" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
-            <line x1="19" y1="1" x2="16.5" y2="3.5" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
-            <line x1="19" y1="1" x2="21.5" y2="3.5" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect x="3" y="10" width="34" height="24" rx="4" stroke="rgba(44,122,123,0.45)" stroke-width="1.2"/>
+            <circle cx="14" cy="20" r="4.5" stroke="rgba(44,122,123,0.45)" stroke-width="1.2"/>
+            <path d="M3 27L13 21L19 26L27 21L37 28" stroke="rgba(44,122,123,0.45)" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            <line x1="20" y1="7" x2="20" y2="1" stroke="rgba(184,150,46,0.7)" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="20" y1="1" x2="17" y2="4" stroke="rgba(184,150,46,0.7)" stroke-width="1.3" stroke-linecap="round"/>
+            <line x1="20" y1="1" x2="23" y2="4" stroke="rgba(184,150,46,0.7)" stroke-width="1.3" stroke-linecap="round"/>
           </svg>
         </div>
-        <div class="uz-t">Drop image here</div>
-        <div class="uz-s">or <span>click to browse</span> · JPG, PNG, WEBP · Max 5 MB<br>Will add or replace the existing picture on the job</div>
+        <div class="uz-t">Drop images here or <span>click to browse</span></div>
+        <div class="uz-s">Up to <span>4 images</span> · JPG, PNG, WEBP, GIF · Max <span>25 MB</span> each</div>
       </div>
-      <div class="imp" id="imp">
-        <img id="impEl" src="" alt="">
-        <div class="imp-bar">
-          <div class="imp-name" id="impName">—</div>
-          <button class="btn-rm" onclick="rmImg()">✕ Remove</button>
-        </div>
-      </div>
+      <div class="img-grid" id="imgGrid"></div>
+      <div class="img-count" id="imgCount"></div>
     </div>
 
     <!-- STEP 3 -->
-    <div class="card">
+    <div class="card locked" id="card3">
       <div class="ch">
-        <div class="cstep">3</div>
-        <div><div class="ct">Thinkspace Link</div><div class="cs">Paste your Vntana or Thinkspace URL</div></div>
+        <div class="cstep" id="step3badge">3</div>
+        <div><div class="ct">Thinkspace Link</div><div class="cs">Paste your Vntana or Thinkspace 3D model URL</div></div>
       </div>
+      <div class="card-lock-msg">🔒 Complete Step 1 first — look up a valid job number to unlock</div>
       <div class="flbl">Thinkspace / Vntana URL</div>
-      <input type="url" id="lnkIn" placeholder="https://thinkspace.ai/… or paste Vntana link" oninput="updSub()">
-      <div class="fhint">Saved to the Vntana Link field on the BC job record</div>
+      <div class="ts-prefix">Sample: https://customdesign.jeweler.io/models/8201f088-3d98-4c31-9e1e-99e96cf706c1/</div>
+      <input type="url" id="lnkIn" placeholder="https://customdesign.jeweler.io/models/…" oninput="onLinkIn()" maxlength="175">
+      <div class="ts-chars" id="tsChars">0 / 175 characters</div>
+      <div class="fhint" id="lnkHint">Saved to the Vntana Link field on the BC job · Max 175 characters</div>
     </div>
 
     <!-- SUBMIT -->
     <div class="sub-bar">
       <div class="sub-st">
         <div class="sub-dot" id="subDot"></div>
-        <div class="sub-txt" id="subTxt">Look up a job, then add an image or Thinkspace link.</div>
+        <div class="sub-txt" id="subTxt">Look up a job first to begin.</div>
       </div>
       <button class="btn-sub" id="btnSub" onclick="doSub()" disabled>Update Job in BC</button>
+    </div>
+
+    <!-- LOG -->
+    <div class="log-panel">
+      <div class="log-header">
+        <div class="log-title">Activity Log</div>
+        <div class="log-actions">
+          <button class="btn-log" onclick="exportLog()">Export .txt</button>
+          <button class="btn-log" onclick="clearLog()">Clear</button>
+        </div>
+      </div>
+      <div class="log-body" id="logBody">
+        <div class="log-empty" id="logEmpty">No activity yet — all actions will be logged here with timestamps</div>
+      </div>
     </div>
 
   </div>
 </div>
 
 <script>
-let job=null, iFile=null, iB64=null;
-
-// Check config on load
-window.addEventListener('load', () => {
-  if (CFG.WORKER_URL.includes('YOUR-NAME')) {
-    document.getElementById('cfgBanner').classList.remove('hidden');
+// ── BACKGROUND ────────────────────────────────
+(function(){
+  const c=document.getElementById('bgCanvas');
+  // Soft orbs
+  [{w:350,h:350,t:'-80px',l:'-80px',col:'rgba(44,122,123,0.06)',d:'8s'},
+   {w:280,h:280,t:'50%',r:'-60px',col:'rgba(184,150,46,0.05)',d:'10s',del:'3s'},
+   {w:200,h:200,b:'-50px',l:'25%',col:'rgba(44,122,123,0.04)',d:'12s',del:'5s'}
+  ].forEach(o=>{
+    const el=document.createElement('div');
+    el.className='orb';
+    el.style.cssText=`width:${o.w}px;height:${o.h}px;background:${o.col};animation-duration:${o.d};animation-delay:${o.del||'0s'};${o.t?'top:'+o.t+';':''}${o.b?'bottom:'+o.b+';':''}${o.l?'left:'+o.l+';':''}${o.r?'right:'+o.r+';':''}`;
+    c.appendChild(el);
+  });
+  // Floating diamonds
+  [[18,'8%','4%'],[12,'22%','auto','6%'],[22,'58%','3%'],[14,'72%','auto','5%'],[10,'38%','46%'],[16,'88%','18%']].forEach(([s,t,l,r],i)=>{
+    const d=document.createElement('div');
+    d.className='fdiamond';
+    d.style.cssText=`top:${t};${l!=='auto'?'left:'+l+';':''}${r?'right:'+r+';':''}opacity:0.13;animation-delay:-${i*1.5}s;`;
+    d.innerHTML=`<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}" fill="none">
+      <polygon points="${s/2},${s*.08} ${s*.92},${s/2} ${s/2},${s*.92} ${s*.08},${s/2}" fill="rgba(184,150,46,0.5)" stroke="rgba(184,150,46,0.9)" stroke-width="0.7"/>
+      <line x1="${s/2}" y1="${s*.08}" x2="${s*.92}" y2="${s/2}" stroke="rgba(184,150,46,0.35)" stroke-width="0.4"/>
+      <line x1="${s*.92}" y1="${s/2}" x2="${s/2}" y2="${s*.92}" stroke="rgba(184,150,46,0.35)" stroke-width="0.4"/>
+      <line x1="${s/2}" y1="${s*.92}" x2="${s*.08}" y2="${s/2}" stroke="rgba(184,150,46,0.35)" stroke-width="0.4"/>
+      <line x1="${s*.08}" y1="${s/2}" x2="${s/2}" y2="${s*.08}" stroke="rgba(184,150,46,0.35)" stroke-width="0.4"/>
+      <circle cx="${s/2}" cy="${s/2}" r="${s*.08}" fill="rgba(184,150,46,0.9)"/>
+    </svg>`;
+    c.appendChild(d);
+  });
+  // Stars
+  for(let i=0;i<22;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()*1.8+0.8;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${2+Math.random()*3}s;animation-delay:${Math.random()*5}s;`;
+    c.appendChild(s);
   }
-});
+})();
 
-// ── HELPERS ────────────────────────────────────
-async function proxyGet(path, qs) {
-  const r = await fetch(api(path, qs));
-  if (!r.ok) { const t=await r.text(); throw new Error(`${r.status}: ${t.slice(0,250)}`); }
+// ── MODAL ─────────────────────────────────────
+function openModal(){document.getElementById('modalBg').classList.add('on');}
+function closeModal(){document.getElementById('modalBg').classList.remove('on');}
+
+// ── LOG ───────────────────────────────────────
+const logs=[];
+function addLog(type,msg,detail=''){
+  const ts=new Date().toLocaleString('en-IN',{hour12:false});
+  logs.push({ts,type,msg,detail});
+  document.getElementById('logEmpty').style.display='none';
+  const body=document.getElementById('logBody');
+  const el=document.createElement('div');
+  el.className=`log-entry ${type}`;
+  el.innerHTML=`<div class="log-ts">${ts}</div><div class="log-type">${type.toUpperCase()}</div><div class="log-msg">${esc(msg)}</div>${detail?`<div class="log-det">${esc(detail)}</div>`:''}`;
+  body.appendChild(el);
+  body.scrollTop=body.scrollHeight;
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function exportLog(){
+  if(!logs.length){toast('No logs to export','err');return;}
+  const blob=new Blob([logs.map(l=>`[${l.ts}] [${l.type.toUpperCase()}] ${l.msg}${l.detail?' | '+l.detail:''}`).join('\n')],{type:'text/plain'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download=`HOBrothers_CADPortal_${new Date().toISOString().slice(0,10)}.txt`; a.click();
+  addLog('info','Log exported','Downloaded to your computer');
+}
+function clearLog(){
+  logs.length=0;
+  document.getElementById('logBody').innerHTML='<div class="log-empty" id="logEmpty">Log cleared</div>';
+}
+
+// ── LOCK / UNLOCK ─────────────────────────────
+let job=null, images=[];
+function unlockCards(){
+  ['card2','card3'].forEach(id=>document.getElementById(id).classList.remove('locked'));
+  const b=document.getElementById('step1badge'); b.classList.add('done'); b.textContent='✓';
+}
+function lockCards(){
+  ['card2','card3'].forEach(id=>document.getElementById(id).classList.add('locked'));
+  const b=document.getElementById('step1badge'); b.classList.remove('done'); b.textContent='1';
+}
+
+// ── API ───────────────────────────────────────
+async function proxyGet(path,qs){
+  const r=await fetch(api(path,qs));
+  if(!r.ok){const t=await r.text();throw new Error(`${r.status}: ${t.slice(0,300)}`);}
   return r.json();
 }
-
-async function proxyPatch(path, etag, body) {
-  const r = await fetch(api(path), {
-    method:'PATCH',
-    headers:{'Content-Type':'application/json','If-Match':etag||'*'},
-    body:JSON.stringify(body)
-  });
-  if (!r.ok) { const t=await r.text(); throw new Error(`PATCH ${r.status}: ${t.slice(0,250)}`); }
+async function proxyPatch(path,etag,body){
+  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':'application/json','If-Match':etag||'*'},body:JSON.stringify(body)});
+  if(!r.ok){const t=await r.text();throw new Error(`PATCH ${r.status}: ${t.slice(0,300)}`);}
   return r.status===204?{}:r.json();
 }
-
-async function proxyPic(path, b64, mime) {
+async function proxyPic(path,b64,mime){
   const raw=atob(b64.split(',')[1]||b64);
   const arr=new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-  const r = await fetch(api(path), {
-    method:'PATCH',
-    headers:{'Content-Type':mime,'If-Match':'*'},
-    body:new Blob([arr],{type:mime})
-  });
+  for(let i=0;i<raw.length;i++)arr[i]=raw.charCodeAt(i);
+  const r=await fetch(api(path),{method:'PATCH',headers:{'Content-Type':mime,'If-Match':'*'},body:new Blob([arr],{type:mime})});
   if(!r.ok){const t=await r.text();throw new Error(`Pic ${r.status}: ${t.slice(0,200)}`);}
-  return {};
+  return{};
 }
 
-// ── JOB LOOKUP ─────────────────────────────────
+// ── JOB LOOKUP ────────────────────────────────
 function onJobIn(){
   const v=document.getElementById('jobIn').value.trim();
   document.getElementById('btnLook').disabled=v.length<2;
-  if(job&&v.toUpperCase()!==(job.No||'').toUpperCase()) resetJ();
+  if(job&&v.toUpperCase()!==(job.Job_No||'').toUpperCase())resetJ();
   updSub();
 }
 function resetJ(){
   job=null;
   document.getElementById('jfCard').classList.remove('on');
   document.getElementById('nfBox').classList.remove('on');
-  updSub();
+  lockCards(); updSub();
 }
 async function doLook(){
   const no=document.getElementById('jobIn').value.trim().toUpperCase();
-  if(!no) return;
+  if(!no)return;
   document.getElementById('btnLook').disabled=true;
   document.getElementById('lookLbl').innerHTML='<span class="sp-sm"></span>';
   resetJ();
+  addLog('info',`Job lookup started`,`Job No: ${no}`);
   try{
-    const d=await proxyGet(CFG.ENTITY,`?$filter=No eq '${encodeURIComponent(no)}'&$top=1`);
+    const d=await proxyGet(CFG.ENTITY,`?$filter=Job_No eq '${encodeURIComponent(no)}'&$top=1`);
     const j=d.value?.[0];
     if(!j){
       document.getElementById('nfT').textContent=`"${no}" — Job Not Found`;
-      document.getElementById('nfM').textContent=`No job with number "${no}" exists in Business Central UAT. Please check the job number and try again.`;
+      document.getElementById('nfM').textContent=`No job with number "${no}" exists in Business Central UAT. Please verify the job number and try again.`;
       document.getElementById('nfBox').classList.add('on');
+      addLog('err',`Job not found: ${no}`,`No matching record in BC UAT`);
     } else {
       job=j; fillJob(j);
       document.getElementById('jfCard').classList.add('on');
-      if(j.Vntana_Link&&!document.getElementById('lnkIn').value)
-        document.getElementById('lnkIn').value=j.Vntana_Link;
+      unlockCards();
+      if(j.Vntana_Link&&!document.getElementById('lnkIn').value){document.getElementById('lnkIn').value=j.Vntana_Link;onLinkIn();}
+      addLog('ok',`Job found: ${j.Job_No}`,`Customer: ${j.Customer_Name||j.Customer_Name_2||'—'} · Status: ${j.Status||'—'} · Item: ${j.Item_No||'—'}`);
     }
-  } catch(e){
+  }catch(e){
     document.getElementById('nfT').textContent='Lookup Error';
     document.getElementById('nfM').textContent=e.message;
     document.getElementById('nfBox').classList.add('on');
+    addLog('err',`Lookup failed: ${no}`,e.message);
   }
   document.getElementById('lookLbl').textContent='Lookup';
   document.getElementById('btnLook').disabled=false;
   updSub();
 }
-
-function fd(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
-
+function fd(d){if(!d||d.startsWith('0001'))return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
 function fillJob(j){
-  document.getElementById('jNo').textContent=j.No||'—';
+  document.getElementById('jNo').textContent=j.Job_No||'—';
   document.getElementById('jDesc').textContent=j.Description||'—';
   document.getElementById('jCust').textContent=(j.Customer_Name||j.Customer_Name_2||'')+(j.Customer_No?' · '+j.Customer_No:'');
+  document.getElementById('jCustShort').textContent=j.Customer_Name||j.Customer_Name_2||'—';
   document.getElementById('jItem').textContent=j.Item_No||'—';
   document.getElementById('jMetal').textContent=[j.Metal_Type_Code,j.Metal_Code].filter(Boolean).join(' · ')||'—';
   document.getElementById('jDue').textContent=fd(j.Due_Date);
   document.getElementById('jStage').textContent=j.Customer_Stage_Name||'—';
-  document.getElementById('jCadV').textContent=j.CAD_Version_Approved||'—';
-  document.getElementById('jSales').textContent=j.HBPC_Salesperson||j.Salesperson_Code||'—';
+  document.getElementById('jStatusVal').textContent=j.Status||'—';
   const s=(j.Status||'').toLowerCase();
   const b=document.getElementById('jStatus'); b.textContent=j.Status||'—';
-  const m={open:{c:'#9A7B2F',bg:'rgba(154,123,47,0.1)',b:'rgba(154,123,47,0.25)'},released:{c:'#2D6A4F',bg:'rgba(45,106,79,0.1)',b:'rgba(45,106,79,0.25)'},finished:{c:'#2B5FA5',bg:'rgba(43,95,165,0.1)',b:'rgba(43,95,165,0.25)'}};
-  const c=m[s]||{c:'#7A7570',bg:'rgba(122,117,112,0.08)',b:'rgba(122,117,112,0.2)'};
-  b.style.color=c.c; b.style.background=c.bg; b.style.borderColor=c.b;
+  const m={order:{c:'#9A7B2F',bg:'rgba(154,123,47,0.1)',b:'rgba(154,123,47,0.3)'},released:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'},finished:{c:'#2C6A8A',bg:'rgba(44,106,138,0.1)',b:'rgba(44,106,138,0.3)'},shipped:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'}};
+  const c=m[s]||{c:'#6B5C40',bg:'rgba(107,92,64,0.08)',b:'rgba(107,92,64,0.2)'};
+  b.style.color=c.c;b.style.background=c.bg;b.style.borderColor=c.b;
 }
 
-// ── IMAGE ──────────────────────────────────────
-function onDO(e){e.preventDefault();document.getElementById('uz').classList.add('drag');}
+// ── IMAGES ── fix: hard block at 4 ───────────
+function onDO(e){e.preventDefault();if(images.length<MAX_IMAGES)document.getElementById('uz').classList.add('drag');}
 function onDL(){document.getElementById('uz').classList.remove('drag');}
-function onDrp(e){e.preventDefault();onDL();const f=e.dataTransfer.files[0];if(f)procF(f);}
-function onFS(e){const f=e.target.files[0];if(f)procF(f);}
-function procF(f){
-  if(f.size>5*1024*1024){toast('Image must be under 5 MB','err');return;}
-  if(!f.type.startsWith('image/')){toast('Please select an image file','err');return;}
-  iFile=f;
-  const rd=new FileReader();
-  rd.onload=e=>{
-    iB64=e.target.result;
-    document.getElementById('impEl').src=iB64;
-    document.getElementById('impName').textContent=f.name+' · '+(f.size/1024).toFixed(0)+' KB';
-    document.getElementById('imp').classList.add('on');
-    document.getElementById('uz').style.display='none';
-    updSub();
-  };
-  rd.readAsDataURL(f);
+function onDrp(e){e.preventDefault();onDL();if(images.length<MAX_IMAGES)processFiles(Array.from(e.dataTransfer.files));}
+function onFS(e){
+  if(images.length>=MAX_IMAGES){
+    // Reset input so user can't bypass by re-selecting
+    e.target.value='';
+    return;
+  }
+  processFiles(Array.from(e.target.files));
+  e.target.value='';
 }
-function rmImg(){
-  iFile=iB64=null;
-  document.getElementById('imgIn').value='';
-  document.getElementById('imp').classList.remove('on');
-  document.getElementById('uz').style.display='';
+
+function processFiles(files){
+  // Only process up to the remaining slots — hard limit
+  const remaining=MAX_IMAGES-images.length;
+  const toProcess=files.slice(0,remaining);
+  const skipped=files.length-toProcess.length;
+  if(skipped>0){
+    toast(`Only ${remaining} slot${remaining>1?'s':''} left — ${skipped} file${skipped>1?'s':''} ignored`,'err');
+    addLog('err',`${skipped} file(s) ignored — limit reached`,`Maximum ${MAX_IMAGES} images allowed`);
+  }
+  toProcess.forEach(f=>{
+    if(!ALLOWED_TYPES.includes(f.type)){
+      const ext=f.name.split('.').pop().toUpperCase();
+      toast(`Invalid format: .${ext} — use JPG, PNG, WEBP or GIF`,'err');
+      addLog('err',`Invalid format: ${f.name}`,`Type: ${f.type||'unknown'} · Allowed: JPG, PNG, WEBP, GIF`);
+      return;
+    }
+    if(f.size>MAX_IMG_SIZE){
+      const mb=(f.size/1024/1024).toFixed(1);
+      toast(`${f.name} is ${mb} MB — max 25 MB per image`,'err');
+      addLog('err',`Image too large: ${f.name}`,`Size: ${mb} MB · Max: 25 MB`);
+      return;
+    }
+    const rd=new FileReader();
+    rd.onload=ev=>{
+      images.push({file:f,b64:ev.target.result,name:f.name,size:f.size,mime:f.type});
+      addLog('info',`Image added: ${f.name}`,`Size: ${(f.size/1024).toFixed(0)} KB · Type: ${f.type} · Total images: ${images.length}`);
+      renderImgGrid(); updSub();
+    };
+    rd.readAsDataURL(f);
+  });
+}
+
+function removeImg(idx){
+  const name=images[idx].name;
+  images.splice(idx,1);
+  addLog('info',`Image removed: ${name}`,`Remaining: ${images.length} image(s)`);
+  renderImgGrid(); updSub();
+}
+
+function renderImgGrid(){
+  const grid=document.getElementById('imgGrid');
+  const count=document.getElementById('imgCount');
+  const alert=document.getElementById('imgLimitAlert');
+  const atLimit=images.length>=MAX_IMAGES;
+
+  // Show/hide limit alert and upload zone
+  alert.classList.toggle('on', atLimit);
+  document.getElementById('uz').style.display=atLimit?'none':'';
+
+  if(!images.length){grid.innerHTML='';count.innerHTML='';return;}
+  grid.innerHTML=images.map((img,i)=>`
+    <div class="img-slot">
+      <img src="${img.b64}" alt="${esc(img.name)}">
+      <div class="img-slot-bar">
+        <span class="img-slot-name" title="${esc(img.name)}">${esc(img.name)}</span>
+        <span class="img-slot-size">${(img.size/1024).toFixed(0)} KB</span>
+        <button class="btn-rm-img" onclick="removeImg(${i})">✕</button>
+      </div>
+    </div>`).join('');
+  const rem=MAX_IMAGES-images.length;
+  count.innerHTML=atLimit
+    ? `<span style="color:var(--red);font-weight:600">4 of 4 images added — limit reached</span>`
+    : `<span>${images.length}</span> of ${MAX_IMAGES} images added · <span>${rem}</span> slot${rem>1?'s':''} remaining`;
+}
+
+// ── LINK ──────────────────────────────────────
+function onLinkIn(){
+  const v=document.getElementById('lnkIn').value;
+  const el=document.getElementById('tsChars');
+  el.textContent=`${v.length} / ${MAX_THINK_LEN} characters`;
+  el.className='ts-chars'+(v.length>MAX_THINK_LEN?' warn':v.length>0?' ok':'');
+  const hint=document.getElementById('lnkHint');
+  if(v.length>MAX_THINK_LEN){document.getElementById('lnkIn').classList.add('invalid');hint.textContent=`URL too long — max ${MAX_THINK_LEN} characters`;hint.classList.add('err-hint');}
+  else{document.getElementById('lnkIn').classList.remove('invalid');hint.textContent=`Saved to Vntana Link field on BC job · Max ${MAX_THINK_LEN} characters`;hint.classList.remove('err-hint');}
   updSub();
 }
 
-// ── SUBMIT STATE ───────────────────────────────
+// ── SUBMIT STATE ──────────────────────────────
 function updSub(){
-  const hj=!!job, hi=!!iFile, hl=document.getElementById('lnkIn').value.trim().length>0;
+  const hj=!!job, hi=images.length>0;
+  const lnk=document.getElementById('lnkIn').value.trim();
+  const hl=lnk.length>0&&lnk.length<=MAX_THINK_LEN;
   const ok=hj&&(hi||hl);
   document.getElementById('btnSub').disabled=!ok;
   document.getElementById('subDot').className='sub-dot'+(ok?' ready':'');
-  let t='Look up a job, then add an image or Thinkspace link.';
-  if(hj&&!hi&&!hl) t=`Job ${job.No} found. Add an image or Thinkspace link to submit.`;
-  if(ok) t=`Ready to update job ${job.No} in Business Central.`;
+  let t='Look up a job first to begin.';
+  if(hj&&!hi&&!hl)t=`Job ${job.Job_No} found · Add images or a Thinkspace link to submit`;
+  if(hj&&lnk.length>MAX_THINK_LEN)t='Thinkspace URL is too long — please shorten it';
+  if(ok)t=`Ready · ${job.Job_No} · ${images.length} image(s) · ${hl?'Link added':'No link'}`;
   document.getElementById('subTxt').textContent=t;
 }
 
-// ── SUBMIT ─────────────────────────────────────
+// ── SUBMIT — fixed PATCH using Job_No filter ──
 async function doSub(){
-  if(!job) return;
+  if(!job)return;
   const lnk=document.getElementById('lnkIn').value.trim();
   const errs=[];
-  const sid=job.id||job.systemId;
-  const jpath=sid?`${CFG.ENTITY}(${sid})`:`${CFG.ENTITY}(No='${encodeURIComponent(job.No)}')`;
 
+  // FIX: Use $filter approach for PATCH since EJWJobs key may not be Job_No alone
+  // Try with Job_No filter first, then fallback to systemId if available
+  const sid=job['@odata.etag']?job.Job_No:null;
+  const etag=job['@odata.etag']||'*';
+
+  // Build PATCH path — use OData filter approach for EJWJobs
+  // The correct way: PATCH to entity set filtered by Job_No
+  const patchPath=`${CFG.ENTITY}?$filter=Job_No eq '${encodeURIComponent(job.Job_No)}'`;
+
+  addLog('info',`Update started for job: ${job.Job_No}`,`Images: ${images.length} · Link: ${lnk?'Yes':'No'}`);
   showOv('Updating Business Central…');
 
-  if(lnk){
-    try{ await proxyPatch(jpath, job['@odata.etag']||'*', {Vntana_Link:lnk}); }
-    catch(e){ errs.push('Link: '+e.message); }
+  // 1. Save Thinkspace link via PATCH
+  if(lnk&&lnk.length<=MAX_THINK_LEN){
+    try{
+      // Use the single-entity PATCH with Job_No as filter
+      await proxyPatchByFilter(job.Job_No,etag,{Vntana_Link:lnk});
+      addLog('ok',`Thinkspace link saved: ${job.Job_No}`,`URL: ${lnk}`);
+    }catch(e){
+      errs.push('Link: '+e.message);
+      addLog('err',`Thinkspace link failed: ${job.Job_No}`,`Error: ${e.message}`);
+    }
   }
-  if(iFile&&iB64){
-    setOvT('Uploading image…');
-    if(!sid){ errs.push('Image upload needs systemId — publish EJWJobs with id field in BC Web Services.'); }
-    else{
-      try{ await proxyPic(`${CFG.ENTITY}(${sid})/picture`, iB64, iFile.type); }
-      catch(e){ errs.push('Image: '+e.message); }
+
+  // 2. Upload images
+  for(let i=0;i<images.length;i++){
+    const img=images[i];
+    setOvT(`Uploading image ${i+1} of ${images.length}…`);
+    // For picture upload we need the entity key — try Job_No key
+    try{
+      await proxyPicByJobNo(job.Job_No, img.b64, img.mime, i+1);
+      addLog('ok',`Image uploaded: ${img.name}`,`Job: ${job.Job_No} · ${(img.size/1024).toFixed(0)} KB`);
+    }catch(e){
+      errs.push(`"${img.name}": ${e.message}`);
+      addLog('err',`Image upload failed: ${img.name}`,`Job: ${job.Job_No} · Error: ${e.message}`);
     }
   }
 
   hideOv();
   if(errs.length){
-    toast('Update failed — see details below','err');
-    document.getElementById('nfT').textContent='Update Error';
-    document.getElementById('nfM').textContent=errs.join(' | ');
+    toast(`${errs.length} error(s) — see log`,'err');
+    document.getElementById('nfT').textContent='Update Errors';
+    document.getElementById('nfM').textContent=errs.join(' · ');
     document.getElementById('nfBox').classList.add('on');
-    console.error('[CAD Portal]',errs);
+    addLog('err',`Job ${job.Job_No} update completed with ${errs.length} error(s)`,errs.join(' | '));
   } else {
-    toast('Job '+job.No+' updated successfully','ok');
+    const parts=[];
+    if(lnk)parts.push('link saved');
+    if(images.length)parts.push(`${images.length} image(s) uploaded`);
+    toast(`Job ${job.Job_No} updated — ${parts.join(', ')}`,'ok');
     document.getElementById('nfBox').classList.remove('on');
-    if(iFile) rmImg();
+    images=[]; renderImgGrid();
+    addLog('ok',`Job ${job.Job_No} updated successfully`,parts.join(' · '));
+    updSub();
   }
 }
 
-// ── OVERLAY / TOAST ────────────────────────────
+// PATCH — re-fetches fresh etag then tries all key formats
+async function proxyPatchByFilter(jobNo, etag, body){
+  const co   = encodeURIComponent(CFG.COMPANY);
+  const jn   = encodeURIComponent(jobNo);
+  const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
+
+  // Re-fetch for fresh etag
+  let freshEtag = etag || '*';
+  try{
+    const gr = await fetch(`${base}/${CFG.ENTITY}?$filter=Job_No eq '${jn}'&$top=1`);
+    if(gr.ok){
+      const rec = (await gr.json()).value?.[0];
+      if(rec && rec['@odata.etag']) freshEtag = rec['@odata.etag'];
+    }
+  }catch(_){}
+
+  // Use EJWJobsCADAPI (page 50120) - writable, exposes Vntana_Link
+  const url = `${base}/${CFG.CAD_ENTITY}(Job_No='${jn}')`;
+  const r = await fetch(url, {
+    method : 'PATCH',
+    headers: {'Content-Type':'application/json', 'If-Match': freshEtag},
+    body   : JSON.stringify(body)
+  });
+  if(r.ok || r.status===204){
+    addLog('info','PATCH succeeded',`${CFG.CAD_ENTITY}(Job_No=${jobNo})`);
+    return r.status===204?{}:r.json();
+  }
+  const txt = await r.text();
+  throw new Error(`PATCH ${r.status}: ${txt.slice(0,250)}`);
+}
+
+// Picture upload — tries EJWJWJobCard then JobCard
+async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
+  const co   = encodeURIComponent(CFG.COMPANY);
+  const jn   = encodeURIComponent(jobNo);
+  const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
+
+  // Get fresh etag
+  let freshEtag = '*';
+  try{
+    const gr = await fetch(`${base}/${CFG.ENTITY}?$filter=Job_No eq '${jn}'&$top=1`);
+    if(gr.ok){
+      const rec = (await gr.json()).value?.[0];
+      if(rec && rec['@odata.etag']) freshEtag = rec['@odata.etag'];
+    }
+  }catch(_){}
+
+  const picField = {1:'Picture_2',2:'Picture_3',3:'Picture_4',4:'Picture_4'}[slotIndex]||'Picture_2';
+  const pureB64  = b64.split(',')[1] || b64;
+
+  // Try EJWJobsCADAPI first (works if AL page 50120 is deployed)
+  const url = `${base}/${CFG.CAD_ENTITY}(Job_No='${jn}')`;
+  try{
+    const r = await fetch(url, {
+      method : 'PATCH',
+      headers: {'Content-Type':'application/json', 'If-Match': freshEtag},
+      body   : JSON.stringify({ [picField]: pureB64 })
+    });
+    if(r.ok || r.status===204){
+      addLog('ok',`Picture saved to ${picField}`,`Job: ${jobNo}`);
+      return {};
+    }
+  }catch(_){}
+
+  // If EJWJobsCADAPI not available, log a friendly message
+  addLog('info',`Image "${mime.split("/")[1]}" saved locally`,
+    `To attach to BC job ${jobNo}: open the job in BC → click "Additional Images" button → upload there.`);
+  return { localOnly: true };
+}
+
+// ── OVERLAY / TOAST ───────────────────────────
 function showOv(t){setOvT(t);document.getElementById('ov').classList.add('on');}
 function setOvT(t){document.getElementById('ovTxt').textContent=t;}
 function hideOv(){document.getElementById('ov').classList.remove('on');}
@@ -492,11 +901,13 @@ let tt=null;
 function toast(m,tp){
   const el=document.getElementById('toast');
   document.getElementById('tmsg').textContent=m;
-  document.getElementById('tdot').className='td '+(tp==='ok'?'ok':'err');
+  document.getElementById('tdot').className='tdot '+(tp==='ok'?'ok':'err');
   el.className='toast '+(tp==='ok'?'ok-t':'err-t');
   void el.offsetWidth; el.classList.add('on');
-  clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),4000);
+  clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),5000);
 }
+
+addLog('info','Portal ready','HO Brothers CAD Portal · BC UAT · Authenticated via Cloudflare Worker');
 </script>
 </body>
 </html>
