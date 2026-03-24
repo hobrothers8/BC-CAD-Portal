@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HO Brothers · CAD Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --white:#FFFFFF;--bg:#F7F5F2;--bg2:#EFEDE9;
+  --line:#E2DED8;--line2:#D0CBC2;
+  --ink:#1A1714;--ink2:#3D3A36;--muted:#7A7570;--faint:#A8A39D;
+  --gold:#9A7B2F;--gold2:#B8962E;--gold3:#D4AE4A;
+  --gold-t:rgba(154,123,47,0.1);--gold-b:rgba(154,123,47,0.22);
+  --green:#2D6A4F;--green-t:rgba(45,106,79,0.1);
+  --red:#8B3535;--red-t:rgba(139,53,53,0.08);
+  --sh:0 1px 3px rgba(26,23,20,0.06),0 4px 16px rgba(26,23,20,0.04);
+  --sh2:0 2px 8px rgba(26,23,20,0.08),0 8px 32px rgba(26,23,20,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;font-weight:300;font-size:14px;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOPBAR */
+.topbar{background:var(--white);border-bottom:1px solid var(--line);height:60px;display:flex;align-items:center;padding:0 32px;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 0 var(--line),0 2px 8px rgba(26,23,20,0.04);}
+.tb-l{display:flex;align-items:center;gap:14px;}
+.tb-logo{display:flex;align-items:center;gap:9px;}
+.tb-gem{width:28px;height:28px;}
+.tb-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--ink);letter-spacing:0.04em;}
+.tb-sep{width:1px;height:20px;background:var(--line2);}
+.tb-sect{font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--faint);}
+.tb-r{display:flex;align-items:center;gap:10px;}
+.tb-env{font-size:10px;letter-spacing:0.15em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:var(--green-t);color:var(--green);border:1px solid rgba(45,106,79,0.2);font-weight:500;}
+
+/* CONFIG BANNER */
+.cfg-banner{background:#FFF8E7;border-bottom:1px solid #E8D48A;padding:12px 32px;display:flex;align-items:center;gap:12px;font-size:12px;color:#7A5C1E;}
+.cfg-banner code{font-family:'JetBrains Mono',monospace;background:rgba(0,0,0,0.06);padding:1px 6px;border-radius:3px;font-size:11px;}
+.cfg-banner.hidden{display:none;}
+
+/* MAIN */
+.main{flex:1;padding:36px 32px 64px;display:flex;justify-content:center;background:var(--bg);}
+.wrap{width:100%;max-width:700px;animation:fadeUp .4s ease both;}
+
+/* PAGE HEADER */
+.ph{margin-bottom:28px;}
+.ph-ey{font-size:10px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold2);margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.ph-ey::before{content:'';width:16px;height:1px;background:var(--gold2);}
+.ph-t{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:var(--ink);line-height:1.2;}
+.ph-t em{font-style:italic;color:var(--gold2);}
+.ph-d{margin-top:6px;font-size:13px;color:var(--muted);line-height:1.75;}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:32px 36px;box-shadow:var(--sh);margin-bottom:14px;}
+.ch{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+.cstep{width:28px;height:28px;border-radius:50%;background:var(--gold-t);border:1px solid var(--gold-b);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--gold2);flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.ct{font-family:'Playfair Display',serif;font-size:17px;font-weight:400;color:var(--ink);}
+.cs{font-size:11px;color:var(--faint);margin-top:1px;}
+
+/* FIELDS */
+.flbl{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink2);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.req{color:var(--gold2);font-size:14px;line-height:1;}
+.frow{display:flex;gap:9px;}
+.fhint{margin-top:5px;font-size:11px;color:var(--faint);line-height:1.6;}
+
+input[type="text"],input[type="url"]{
+  width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:8px;
+  color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:300;
+  padding:10px 13px;outline:none;transition:all .2s;
+}
+input:focus{background:var(--white);border-color:var(--gold2);box-shadow:0 0 0 3px var(--gold-t);}
+input::placeholder{color:var(--faint);font-weight:300;}
+
+.btn-look{background:var(--ink);color:#F7F5F2;border:none;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:0.06em;padding:0 20px;cursor:pointer;transition:all .2s;white-space:nowrap;flex-shrink:0;height:42px;display:flex;align-items:center;gap:7px;}
+.btn-look:hover{background:var(--ink2);}
+.btn-look:disabled{opacity:.4;cursor:not-allowed;}
+
+/* JOB FOUND */
+.jf-card{display:none;margin-top:14px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:18px;animation:fadeUp .3s ease both;}
+.jf-card.on{display:block;}
+.jf-ok{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--green);font-weight:500;letter-spacing:0.06em;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+.jf-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.jf-no{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold2);letter-spacing:0.06em;line-height:1;}
+.jf-desc{font-size:13px;color:var(--ink);margin-top:3px;}
+.jf-cust{font-size:11px;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.sbadge{font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;padding:4px 11px;border-radius:20px;border:1px solid;flex-shrink:0;}
+.jf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.jf-k{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);margin-bottom:2px;}
+.jf-v{font-size:11px;color:var(--ink2);font-family:'JetBrains Mono',monospace;font-weight:300;}
+
+/* NOT FOUND */
+.nf{display:none;margin-top:14px;background:var(--red-t);border:1px solid rgba(139,53,53,0.18);border-radius:10px;padding:14px 18px;gap:12px;align-items:flex-start;}
+.nf.on{display:flex;}
+.nf-t{font-size:13px;font-weight:500;color:var(--red);margin-bottom:3px;}
+.nf-m{font-size:11px;color:var(--muted);line-height:1.6;font-family:'JetBrains Mono',monospace;}
+
+/* UPLOAD */
+.uz{border:2px dashed var(--line2);border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative;background:var(--bg);}
+.uz:hover,.uz.drag{border-color:var(--gold2);background:var(--gold-t);}
+.uz input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.uz-t{font-size:13px;font-weight:500;color:var(--ink2);margin-bottom:3px;}
+.uz-s{font-size:11px;color:var(--faint);line-height:1.65;}
+.uz-s span{color:var(--gold2);font-weight:500;}
+.uz-ico{margin-bottom:8px;}
+.imp{display:none;margin-top:10px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--ink);}
+.imp.on{display:block;}
+.imp img{width:100%;max-height:220px;object-fit:contain;display:block;}
+.imp-bar{background:var(--bg);border-top:1px solid var(--line);padding:9px 13px;display:flex;align-items:center;justify-content:space-between;}
+.imp-name{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;}
+.btn-rm{background:transparent;border:none;color:var(--red);font-size:11px;font-weight:500;cursor:pointer;padding:0;}
+
+/* SUBMIT */
+.sub-bar{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px 28px;box-shadow:var(--sh);display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.sub-st{display:flex;align-items:center;gap:9px;flex:1;}
+.sub-dot{width:8px;height:8px;border-radius:50%;background:var(--line2);flex-shrink:0;transition:all .3s;}
+.sub-dot.ready{background:var(--green);box-shadow:0 0 0 3px var(--green-t);}
+.sub-txt{font-size:12px;color:var(--muted);line-height:1.6;}
+.btn-sub{background:var(--ink);color:#F7F5F2;border:none;border-radius:8px;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:13px 28px;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.btn-sub:hover{background:var(--ink2);transform:translateY(-1px);box-shadow:var(--sh2);}
+.btn-sub:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;background:rgba(247,245,242,.88);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
+.ov.on{display:flex;}
+.ov-sp{width:38px;height:38px;border:2px solid var(--line2);border-top-color:var(--gold2);border-radius:50%;animation:spin .8s linear infinite;}
+.ov-t{font-size:11px;color:var(--muted);letter-spacing:0.2em;text-transform:uppercase;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--white);border:1px solid var(--line);border-radius:10px;padding:12px 22px;box-shadow:var(--sh2);font-size:13px;color:var(--ink2);white-space:nowrap;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:1000;display:flex;align-items:center;gap:9px;}
+.toast.on{transform:translateX(-50%) translateY(0);}
+.toast.ok-t{border-color:rgba(45,106,79,0.25);}
+.toast.err-t{border-color:rgba(139,53,53,0.25);}
+.td{width:7px;height:7px;border-radius:50%;}
+.td.ok{background:var(--green);}
+.td.err{background:var(--red);}
+.sp-sm{display:inline-block;width:12px;height:12px;border:1.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;}
+
+@media(max-width:600px){
+  .main{padding:20px 16px 48px;}
+  .card{padding:22px 18px;}
+  .jf-grid{grid-template-columns:1fr 1fr;}
+  .sub-bar{flex-direction:column;align-items:stretch;}
+  .topbar{padding:0 16px;}
+  .tb-sect{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ CONFIG — update WORKER_URL after deploying your Cloudflare Worker ══ -->
+<script>
+const CFG = {
+  // Paste your Cloudflare Worker URL here after deploying
+  // e.g. "https://ho-brothers-bc-proxy.yourname.workers.dev"
+  WORKER_URL : "https://ho-brothers-bc-proxy.meena-afa.workers.dev",
+  COMPANY    : "HOBrothers",
+  ENTITY     : "EJWJobs"
+};
+// Helper — builds the full proxy URL
+const api = (path, qs="") =>
+  `${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.COMPANY)}')/${path}${qs}`;
+</script>
+
+<!-- OVERLAY & TOAST -->
+<div class="ov" id="ov"><div class="ov-sp"></div><div class="ov-t" id="ovTxt">Updating…</div></div>
+<div class="toast" id="toast"><div class="td ok" id="tdot"></div><span id="tmsg"></span></div>
+
+<!-- CONFIG BANNER (shown if WORKER_URL not set) -->
+<div class="cfg-banner" id="cfgBanner">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#B8962E" stroke-width="1.2"/><line x1="8" y1="5" x2="8" y2="8.5" stroke="#B8962E" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="11" r="0.8" fill="#B8962E"/></svg>
+  Open this file and set <code>WORKER_URL</code> to your Cloudflare Worker URL, then save and refresh.
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="tb-l">
+    <div class="tb-logo">
+      <svg class="tb-gem" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 26,14 14,26 2,14" fill="rgba(154,123,47,0.09)" stroke="rgba(154,123,47,0.55)" stroke-width="0.8"/>
+        <line x1="14" y1="2" x2="26" y2="14" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
+        <line x1="26" y1="14" x2="14" y2="26" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
+        <line x1="14" y1="26" x2="2" y2="14" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
+        <line x1="2" y1="14" x2="14" y2="2" stroke="rgba(154,123,47,0.18)" stroke-width="0.5"/>
+        <circle cx="14" cy="14" r="1.8" fill="rgba(154,123,47,0.65)"/>
+      </svg>
+      <span class="tb-name">HO Brothers</span>
+    </div>
+    <div class="tb-sep"></div>
+    <div class="tb-sect">CAD Design Portal</div>
+  </div>
+  <div class="tb-r">
+    <div class="tb-env">UAT · Live</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="wrap">
+
+    <div class="ph">
+      <div class="ph-ey">CAD Job Update</div>
+      <div class="ph-t">Update Job <em>Details</em></div>
+      <div class="ph-d">Enter a job number to load it from Business Central, then attach your CAD image and Thinkspace link.</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="card">
+      <div class="ch">
+        <div class="cstep">1</div>
+        <div><div class="ct">Job Lookup</div><div class="cs">Search Business Central by job number</div></div>
+      </div>
+      <div class="flbl">Job Number <span class="req">*</span></div>
+      <div class="frow">
+        <input type="text" id="jobIn" placeholder="e.g. JW-100421"
+          oninput="onJobIn()" onkeydown="if(event.key==='Enter')doLook()">
+        <button class="btn-look" id="btnLook" onclick="doLook()" disabled>
+          <span id="lookLbl">Lookup</span>
+        </button>
+      </div>
+      <div class="fhint">Press Enter or click Lookup to search</div>
+
+      <div class="jf-card" id="jfCard">
+        <div class="jf-ok">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#2D6A4F" stroke-width="1.2"/><path d="M4 7L6 9L10 5" stroke="#2D6A4F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Job found in Business Central
+        </div>
+        <div class="jf-top">
+          <div>
+            <div class="jf-no" id="jNo">—</div>
+            <div class="jf-desc" id="jDesc">—</div>
+            <div class="jf-cust" id="jCust">—</div>
+          </div>
+          <div class="sbadge" id="jStatus">—</div>
+        </div>
+        <div class="jf-grid">
+          <div><div class="jf-k">Item No.</div><div class="jf-v" id="jItem">—</div></div>
+          <div><div class="jf-k">Metal</div><div class="jf-v" id="jMetal">—</div></div>
+          <div><div class="jf-k">Due Date</div><div class="jf-v" id="jDue">—</div></div>
+          <div><div class="jf-k">Stage</div><div class="jf-v" id="jStage">—</div></div>
+          <div><div class="jf-k">CAD Version</div><div class="jf-v" id="jCadV">—</div></div>
+          <div><div class="jf-k">Salesperson</div><div class="jf-v" id="jSales">—</div></div>
+        </div>
+      </div>
+
+      <div class="nf" id="nfBox">
+        <div>
+          <div class="nf-t" id="nfT">Job Not Found</div>
+          <div class="nf-m" id="nfM">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <div class="ch">
+        <div class="cstep">2</div>
+        <div><div class="ct">CAD Image</div><div class="cs">Add or replace the picture on the job record</div></div>
+      </div>
+      <div class="uz" id="uz" ondragover="onDO(event)" ondragleave="onDL()" ondrop="onDrp(event)">
+        <input type="file" id="imgIn" accept="image/*" onchange="onFS(event)">
+        <div class="uz-ico">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect x="3" y="9" width="32" height="23" rx="3" stroke="rgba(154,123,47,0.4)" stroke-width="1.1"/>
+            <circle cx="13" cy="19" r="4" stroke="rgba(154,123,47,0.4)" stroke-width="1.1"/>
+            <path d="M3 26L12 20L18 25L25 20L35 27" stroke="rgba(154,123,47,0.4)" stroke-width="1.1" fill="none" stroke-linejoin="round"/>
+            <line x1="19" y1="6" x2="19" y2="1" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="19" y1="1" x2="16.5" y2="3.5" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
+            <line x1="19" y1="1" x2="21.5" y2="3.5" stroke="rgba(154,123,47,0.6)" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="uz-t">Drop image here</div>
+        <div class="uz-s">or <span>click to browse</span> · JPG, PNG, WEBP · Max 5 MB<br>Will add or replace the existing picture on the job</div>
+      </div>
+      <div class="imp" id="imp">
+        <img id="impEl" src="" alt="">
+        <div class="imp-bar">
+          <div class="imp-name" id="impName">—</div>
+          <button class="btn-rm" onclick="rmImg()">✕ Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="card">
+      <div class="ch">
+        <div class="cstep">3</div>
+        <div><div class="ct">Thinkspace Link</div><div class="cs">Paste your Vntana or Thinkspace URL</div></div>
+      </div>
+      <div class="flbl">Thinkspace / Vntana URL</div>
+      <input type="url" id="lnkIn" placeholder="https://thinkspace.ai/… or paste Vntana link" oninput="updSub()">
+      <div class="fhint">Saved to the Vntana Link field on the BC job record</div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="sub-bar">
+      <div class="sub-st">
+        <div class="sub-dot" id="subDot"></div>
+        <div class="sub-txt" id="subTxt">Look up a job, then add an image or Thinkspace link.</div>
+      </div>
+      <button class="btn-sub" id="btnSub" onclick="doSub()" disabled>Update Job in BC</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let job=null, iFile=null, iB64=null;
+
+// Check config on load
+window.addEventListener('load', () => {
+  if (CFG.WORKER_URL.includes('YOUR-NAME')) {
+    document.getElementById('cfgBanner').classList.remove('hidden');
+  }
+});
+
+// ── HELPERS ────────────────────────────────────
+async function proxyGet(path, qs) {
+  const r = await fetch(api(path, qs));
+  if (!r.ok) { const t=await r.text(); throw new Error(`${r.status}: ${t.slice(0,250)}`); }
+  return r.json();
+}
+
+async function proxyPatch(path, etag, body) {
+  const r = await fetch(api(path), {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json','If-Match':etag||'*'},
+    body:JSON.stringify(body)
+  });
+  if (!r.ok) { const t=await r.text(); throw new Error(`PATCH ${r.status}: ${t.slice(0,250)}`); }
+  return r.status===204?{}:r.json();
+}
+
+async function proxyPic(path, b64, mime) {
+  const raw=atob(b64.split(',')[1]||b64);
+  const arr=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
+  const r = await fetch(api(path), {
+    method:'PATCH',
+    headers:{'Content-Type':mime,'If-Match':'*'},
+    body:new Blob([arr],{type:mime})
+  });
+  if(!r.ok){const t=await r.text();throw new Error(`Pic ${r.status}: ${t.slice(0,200)}`);}
+  return {};
+}
+
+// ── JOB LOOKUP ─────────────────────────────────
+function onJobIn(){
+  const v=document.getElementById('jobIn').value.trim();
+  document.getElementById('btnLook').disabled=v.length<2;
+  if(job&&v.toUpperCase()!==(job.No||'').toUpperCase()) resetJ();
+  updSub();
+}
+function resetJ(){
+  job=null;
+  document.getElementById('jfCard').classList.remove('on');
+  document.getElementById('nfBox').classList.remove('on');
+  updSub();
+}
+async function doLook(){
+  const no=document.getElementById('jobIn').value.trim().toUpperCase();
+  if(!no) return;
+  document.getElementById('btnLook').disabled=true;
+  document.getElementById('lookLbl').innerHTML='<span class="sp-sm"></span>';
+  resetJ();
+  try{
+    const d=await proxyGet(CFG.ENTITY,`?$filter=No eq '${encodeURIComponent(no)}'&$top=1`);
+    const j=d.value?.[0];
+    if(!j){
+      document.getElementById('nfT').textContent=`"${no}" — Job Not Found`;
+      document.getElementById('nfM').textContent=`No job with number "${no}" exists in Business Central UAT. Please check the job number and try again.`;
+      document.getElementById('nfBox').classList.add('on');
+    } else {
+      job=j; fillJob(j);
+      document.getElementById('jfCard').classList.add('on');
+      if(j.Vntana_Link&&!document.getElementById('lnkIn').value)
+        document.getElementById('lnkIn').value=j.Vntana_Link;
+    }
+  } catch(e){
+    document.getElementById('nfT').textContent='Lookup Error';
+    document.getElementById('nfM').textContent=e.message;
+    document.getElementById('nfBox').classList.add('on');
+  }
+  document.getElementById('lookLbl').textContent='Lookup';
+  document.getElementById('btnLook').disabled=false;
+  updSub();
+}
+
+function fd(d){if(!d)return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+
+function fillJob(j){
+  document.getElementById('jNo').textContent=j.No||'—';
+  document.getElementById('jDesc').textContent=j.Description||'—';
+  document.getElementById('jCust').textContent=(j.Customer_Name||j.Customer_Name_2||'')+(j.Customer_No?' · '+j.Customer_No:'');
+  document.getElementById('jItem').textContent=j.Item_No||'—';
+  document.getElementById('jMetal').textContent=[j.Metal_Type_Code,j.Metal_Code].filter(Boolean).join(' · ')||'—';
+  document.getElementById('jDue').textContent=fd(j.Due_Date);
+  document.getElementById('jStage').textContent=j.Customer_Stage_Name||'—';
+  document.getElementById('jCadV').textContent=j.CAD_Version_Approved||'—';
+  document.getElementById('jSales').textContent=j.HBPC_Salesperson||j.Salesperson_Code||'—';
+  const s=(j.Status||'').toLowerCase();
+  const b=document.getElementById('jStatus'); b.textContent=j.Status||'—';
+  const m={open:{c:'#9A7B2F',bg:'rgba(154,123,47,0.1)',b:'rgba(154,123,47,0.25)'},released:{c:'#2D6A4F',bg:'rgba(45,106,79,0.1)',b:'rgba(45,106,79,0.25)'},finished:{c:'#2B5FA5',bg:'rgba(43,95,165,0.1)',b:'rgba(43,95,165,0.25)'}};
+  const c=m[s]||{c:'#7A7570',bg:'rgba(122,117,112,0.08)',b:'rgba(122,117,112,0.2)'};
+  b.style.color=c.c; b.style.background=c.bg; b.style.borderColor=c.b;
+}
+
+// ── IMAGE ──────────────────────────────────────
+function onDO(e){e.preventDefault();document.getElementById('uz').classList.add('drag');}
+function onDL(){document.getElementById('uz').classList.remove('drag');}
+function onDrp(e){e.preventDefault();onDL();const f=e.dataTransfer.files[0];if(f)procF(f);}
+function onFS(e){const f=e.target.files[0];if(f)procF(f);}
+function procF(f){
+  if(f.size>5*1024*1024){toast('Image must be under 5 MB','err');return;}
+  if(!f.type.startsWith('image/')){toast('Please select an image file','err');return;}
+  iFile=f;
+  const rd=new FileReader();
+  rd.onload=e=>{
+    iB64=e.target.result;
+    document.getElementById('impEl').src=iB64;
+    document.getElementById('impName').textContent=f.name+' · '+(f.size/1024).toFixed(0)+' KB';
+    document.getElementById('imp').classList.add('on');
+    document.getElementById('uz').style.display='none';
+    updSub();
+  };
+  rd.readAsDataURL(f);
+}
+function rmImg(){
+  iFile=iB64=null;
+  document.getElementById('imgIn').value='';
+  document.getElementById('imp').classList.remove('on');
+  document.getElementById('uz').style.display='';
+  updSub();
+}
+
+// ── SUBMIT STATE ───────────────────────────────
+function updSub(){
+  const hj=!!job, hi=!!iFile, hl=document.getElementById('lnkIn').value.trim().length>0;
+  const ok=hj&&(hi||hl);
+  document.getElementById('btnSub').disabled=!ok;
+  document.getElementById('subDot').className='sub-dot'+(ok?' ready':'');
+  let t='Look up a job, then add an image or Thinkspace link.';
+  if(hj&&!hi&&!hl) t=`Job ${job.No} found. Add an image or Thinkspace link to submit.`;
+  if(ok) t=`Ready to update job ${job.No} in Business Central.`;
+  document.getElementById('subTxt').textContent=t;
+}
+
+// ── SUBMIT ─────────────────────────────────────
+async function doSub(){
+  if(!job) return;
+  const lnk=document.getElementById('lnkIn').value.trim();
+  const errs=[];
+  const sid=job.id||job.systemId;
+  const jpath=sid?`${CFG.ENTITY}(${sid})`:`${CFG.ENTITY}(No='${encodeURIComponent(job.No)}')`;
+
+  showOv('Updating Business Central…');
+
+  if(lnk){
+    try{ await proxyPatch(jpath, job['@odata.etag']||'*', {Vntana_Link:lnk}); }
+    catch(e){ errs.push('Link: '+e.message); }
+  }
+  if(iFile&&iB64){
+    setOvT('Uploading image…');
+    if(!sid){ errs.push('Image upload needs systemId — publish EJWJobs with id field in BC Web Services.'); }
+    else{
+      try{ await proxyPic(`${CFG.ENTITY}(${sid})/picture`, iB64, iFile.type); }
+      catch(e){ errs.push('Image: '+e.message); }
+    }
+  }
+
+  hideOv();
+  if(errs.length){
+    toast('Update failed — see details below','err');
+    document.getElementById('nfT').textContent='Update Error';
+    document.getElementById('nfM').textContent=errs.join(' | ');
+    document.getElementById('nfBox').classList.add('on');
+    console.error('[CAD Portal]',errs);
+  } else {
+    toast('Job '+job.No+' updated successfully','ok');
+    document.getElementById('nfBox').classList.remove('on');
+    if(iFile) rmImg();
+  }
+}
+
+// ── OVERLAY / TOAST ────────────────────────────
+function showOv(t){setOvT(t);document.getElementById('ov').classList.add('on');}
+function setOvT(t){document.getElementById('ovTxt').textContent=t;}
+function hideOv(){document.getElementById('ov').classList.remove('on');}
+let tt=null;
+function toast(m,tp){
+  const el=document.getElementById('toast');
+  document.getElementById('tmsg').textContent=m;
+  document.getElementById('tdot').className='td '+(tp==='ok'?'ok':'err');
+  el.className='toast '+(tp==='ok'?'ok-t':'err-t');
+  void el.offsetWidth; el.classList.add('on');
+  clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),4000);
+}
+</script>
+</body>
+</html>
