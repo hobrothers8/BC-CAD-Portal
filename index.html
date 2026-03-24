@@ -900,43 +900,31 @@ async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
   const jn         = encodeURIComponent(jobNo);
   const COMPANY_ID = '98240263-32db-f011-95d1-002248791087';
   const apiBase    = `${base}/api/hobrothers/cadportal/v1.0/companies(${COMPANY_ID})`;
-  const picField   = {1:'picture2',2:'picture3',3:'picture4',4:'picture4'}[slotIndex]||'picture2';
   const pureB64    = b64.split(',')[1]||b64;
+  const slot       = slotIndex || 1;
 
-  const raw = atob(pureB64);
-  const arr = new Uint8Array(raw.length);
-  for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-  const blob = new Blob([arr],{type:mime});
+  // Call the UploadPicture bound action on the API page
+  // POST to /jobImages(jobNo='...')/Microsoft.NAV.UploadPicture
+  const actionUrl = `${apiBase}/jobImages(jobNo='${jn}')/Microsoft.NAV.UploadPicture`;
 
-  // Try all methods and paths
-  const key = `jobImages(jobNo='${jn}')`;
-  const attempts = [
-    {method:'PUT',  url:`${apiBase}/${key}/${picField}/$value`, ct:mime},
-    {method:'PUT',  url:`${apiBase}/${key}/${picField}`,        ct:mime},
-    {method:'PATCH',url:`${apiBase}/${key}/${picField}/$value`, ct:mime},
-    {method:'POST', url:`${apiBase}/${key}/${picField}`,        ct:mime},
-  ];
+  const r = await fetch(actionUrl, {
+    method : 'POST',
+    headers: {'Content-Type':'application/json'},
+    body   : JSON.stringify({
+      PictureBase64: pureB64,
+      PictureSlot  : slot
+    })
+  });
 
-  for(const a of attempts){
-    try{
-      const r = await fetch(a.url,{
-        method:a.method,
-        headers:{'Content-Type':a.ct,'If-Match':'*'},
-        body:blob
-      });
-      const t = await r.text();
-      addLog('info',`${a.method} ${r.status}`,`/${picField}${a.url.includes('$value')?'/$value':''} → ${t.slice(0,80)}`);
-      if(r.ok||r.status===204){
-        addLog('ok',`Image uploaded — ${picField}`,`Job: ${jobNo}`);
-        return {};
-      }
-    }catch(e){ addLog('info',`${a.method} error`,e.message); }
+  const t = await r.text();
+  addLog('info',`Action POST ${r.status}`,t.slice(0,150));
+
+  if(r.ok || r.status===204){
+    addLog('ok',`Image uploaded via UploadPicture action`,`Job: ${jobNo} · Slot: ${slot}`);
+    return {};
   }
 
-  // Final fallback — tell user to upload via BC Additional Images button
-  addLog('info',`Image saved locally for ${jobNo}`,
-    `BC does not support direct MediaSet upload via API. Open job in BC → click "Additional Images" to upload manually.`);
-  return {localOnly:true};
+  throw new Error(`Image upload failed ${r.status}: ${t.slice(0,150)}`);
 }
 
 // ── OVERLAY / TOAST ───────────────────────────
