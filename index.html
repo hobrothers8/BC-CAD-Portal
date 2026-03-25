@@ -1,3 +1,11 @@
+<!--
+  ============================================================
+  HO Brothers · CAD Design Portal
+  Copyright © 2026 HO Brothers / Business Computing
+  All rights reserved. Unauthorized copying, modification,
+  distribution or use of this code is strictly prohibited.
+  ============================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -152,10 +160,12 @@ input::placeholder{color:var(--text3);font-weight:300;}
 .jf-card.on{display:block;}
 .jf-ok{display:flex;align-items:center;gap:8px;font-size:11px;color:#1a6a3a;font-weight:700;letter-spacing:0.08em;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line);}
 .jf-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
-.jf-no{font-family:'Cormorant Garamond',serif;font-size:24px;color:#8B6914;letter-spacing:0.08em;line-height:1;font-weight:600;}
-.jf-desc{font-size:14px;color:#1A1208;margin-top:4px;font-weight:600;}
-.jf-cust{font-size:12px;color:#3D3220;margin-top:3px;font-family:'JetBrains Mono',monospace;font-weight:400;}
+.jf-no{font-family:'Cormorant Garamond',serif;font-size:28px;color:#1A1410;letter-spacing:0.04em;line-height:1;font-weight:700;}
+.jf-desc{font-size:15px;color:#1A1208;margin-top:5px;font-weight:700;}
+.jf-cust{font-size:12px;color:#1A1410;margin-top:3px;font-family:'JetBrains Mono',monospace;font-weight:500;}
 .sbadge{font-size:9px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1px solid;flex-shrink:0;font-weight:700;}
+.bc-img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid rgba(44,80,120,0.15);cursor:pointer;}
+.bc-img:hover{border-color:#f08080;transform:scale(1.05);transition:0.15s;}
 .jf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
 .jf-item{background:#f0f7ff;border:1px solid rgba(44,122,123,0.2);border-radius:8px;padding:10px 13px;}
 .jf-k{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#2C7A7B;margin-bottom:4px;font-weight:700;}
@@ -247,7 +257,9 @@ input::placeholder{color:var(--text3);font-weight:300;}
 @media(max-width:600px){
   .main,.hero{padding-left:16px;padding-right:16px;}
   .card{padding:20px 16px;}
-  .jf-grid{grid-template-columns:1fr 1fr;}
+  .bc-img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid rgba(44,80,120,0.15);cursor:pointer;}
+.bc-img:hover{border-color:#f08080;transform:scale(1.05);transition:0.15s;}
+.jf-grid{grid-template-columns:1fr 1fr;}
   .sub-bar{flex-direction:column;align-items:stretch;}
   .img-grid{grid-template-columns:1fr;}
   .topbar{padding:0 16px;}
@@ -260,7 +272,7 @@ input::placeholder{color:var(--text3);font-weight:300;}
 
 <script>
 const CFG={
-  WORKER_URL  :"https://ho-brothers-bc-proxy.meena-afa.workers.dev",
+  WORKER_URL  :atob("aHR0cHM6Ly9oby1icm90aGVycy1iYy1wcm94eS5tZWVuYS1hZmEud29ya2Vycy5kZXY="),
   COMPANY     :"HOBrothers",
   ENTITY      :"EJWJobs",
   CAD_ENTITY  :"EJWJobsRW",
@@ -409,13 +421,13 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#38A169" stroke-width="1.2"/><path d="M4 7L6 9L10 5" stroke="#38A169" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Job found — steps 2 &amp; 3 are now unlocked
         </div>
-        <div class="jf-top">
+        <div class="jf-top"><div class="sbadge" id="jStatus" style="display:none">—</div>
           <div>
             <div class="jf-no" id="jNo">—</div>
             <div class="jf-desc" id="jDesc">—</div>
             <div class="jf-cust" id="jCust">—</div>
           </div>
-          <div class="sbadge" id="jStatus">—</div>
+
         </div>
         <div class="jf-grid">
           <div class="jf-item"><div class="jf-k">Item No.</div><div class="jf-v" id="jItem">—</div></div>
@@ -425,6 +437,13 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
           <div class="jf-item"><div class="jf-k">Status</div><div class="jf-v" id="jStatusVal">—</div></div>
           <div class="jf-item"><div class="jf-k">Customer</div><div class="jf-v" id="jCustShort">—</div></div>
         </div>
+
+        <!-- BC Saved Images Gallery -->
+        <div id="bcImgSection" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid rgba(44,80,120,0.1);">
+          <div style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#2C7A7B;font-weight:700;margin-bottom:8px;">Saved in BC</div>
+          <div id="bcImgGallery" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+
       </div>
       <div class="nf" id="nfBox">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style="flex-shrink:0;margin-top:1px"><circle cx="10" cy="10" r="9" stroke="#C53030" stroke-width="1.2"/><path d="M6.5 6.5L13.5 13.5M13.5 6.5L6.5 13.5" stroke="#C53030" stroke-width="1.2" stroke-linecap="round"/></svg>
@@ -670,6 +689,8 @@ function fillJob(j){
   document.getElementById('jDue').textContent=fd(j.Due_Date);
   document.getElementById('jStage').textContent=j.Customer_Stage_Name||'—';
   document.getElementById('jStatusVal').textContent=j.Status||'—';
+  // Fetch and display saved BC images
+  fetchBCImages(j.Job_No);
   const s=(j.Status||'').toLowerCase();
   const b=document.getElementById('jStatus'); b.textContent=j.Status||'—';
   const m={order:{c:'#9A7B2F',bg:'rgba(154,123,47,0.1)',b:'rgba(154,123,47,0.3)'},released:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'},finished:{c:'#2C6A8A',bg:'rgba(44,106,138,0.1)',b:'rgba(44,106,138,0.3)'},shipped:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'}};
@@ -852,79 +873,67 @@ async function proxyPatchByFilter(jobNo, etag, body){
   const jn   = encodeURIComponent(jobNo);
   const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
 
-  // Step 1: fetch the record to get Item_No and Job_Type for composite key
-  let itemNo = '', jobType = 'Regular';
+  // Get fresh etag from EJWJobsRW
+  let freshEtag = '*';
   try{
     const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
     if(gr.ok){
       const rec = (await gr.json()).value?.[0];
-      if(rec){ itemNo = rec.Item_No||''; jobType = rec.Job_Type||'Regular'; }
+      if(rec) freshEtag = rec['@odata.etag']||'*';
     }
   }catch(_){}
 
-  const iN = encodeURIComponent(itemNo);
-  const jT = encodeURIComponent(jobType);
-
-  // Step 2: try all key formats — composite first then fallbacks
+  // Try key formats - ODataKeyFields="Job No." should mean Job_No is the key
   const attempts = [
-    `${base}/EJWJobsRW(Item_No='${iN}',Job_No='${jn}',Job_Type='${jT}')`,
-    `${base}/EJWJobsRW(Job_No='${jn}',Item_No='${iN}',Job_Type='${jT}')`,
     `${base}/EJWJobsRW(Job_No='${jn}')`,
     `${base}/EJWJobsRW('${jn}')`,
+    `${base}/EJWJobsRW(No='${jn}')`,
   ];
 
-  let lastErr = 'All attempts failed';
+  let lastErr = '';
   for(const url of attempts){
-    try{
-      const r = await fetch(url,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json','If-Match':'*'},
-        body:JSON.stringify(body)
-      });
-      if(r.ok||r.status===204){
-        addLog('ok','Thinkspace link saved',`Key: ${url.split('(')[1]?.slice(0,40)}`);
-        return r.status===204?{}:r.json();
-      }
-      const t = await r.text();
-      addLog('info',`PATCH ${r.status}`,`${url.split('/').pop().slice(0,40)} → ${t.slice(0,80)}`);
-      lastErr = `PATCH ${r.status}: ${t.slice(0,200)}`;
-      if(r.status!==404&&r.status!==400&&r.status!==405) break;
-    }catch(e){ lastErr=e.message; }
+    const r = await fetch(url,{
+      method:'PATCH',
+      headers:{'Content-Type':'application/json','If-Match':'*'},
+      body:JSON.stringify(body)
+    });
+    if(r.ok||r.status===204){
+      addLog('info','PATCH succeeded',url.split('/Company')[1]);
+      return r.status===204?{}:r.json();
+    }
+    const t = await r.text();
+    addLog('info',`PATCH ${r.status}`,`${url.split('/').pop().slice(0,30)} → ${t.slice(0,80)}`);
+    lastErr = `PATCH ${r.status}: ${t.slice(0,200)}`;
+    if(r.status!==404&&r.status!==400) break;
   }
   throw new Error(lastErr);
 }
 
 // Picture upload — tries EJWJWJobCard then JobCard
 async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
-  const base       = CFG.WORKER_URL;
-  const jn         = encodeURIComponent(jobNo);
-  const COMPANY_ID = '98240263-32db-f011-95d1-002248791087';
-  const apiBase    = `${base}/api/hobrothers/cadportal/v1.0/companies(${COMPANY_ID})`;
-  const pureB64    = b64.split(',')[1]||b64;
-  const slot       = slotIndex || 1;
+  const base    = CFG.WORKER_URL;
+  const pureB64 = b64.split(',')[1]||b64;
+  const slot    = slotIndex || 1;
 
-  // Call the UploadPicture bound action on the API page
-  // POST to /jobImages(jobNo='...')/Microsoft.NAV.UploadPicture
-  const actionUrl = `${apiBase}/jobImages(jobNo='${jn}')/Microsoft.NAV.UploadPicture`;
-
-  const r = await fetch(actionUrl, {
+  // Call SOAP codeunit via worker — send JSON, worker converts to SOAP
+  const r = await fetch(`${base}/soap/EJWJobsImageUpload`, {
     method : 'POST',
     headers: {'Content-Type':'application/json'},
-    body   : JSON.stringify({
-      PictureBase64: pureB64,
-      PictureSlot  : slot
-    })
+    body   : JSON.stringify({JobNo: jobNo, PictureBase64: pureB64, PictureSlot: slot})
   });
 
   const t = await r.text();
-  addLog('info',`Action POST ${r.status}`,t.slice(0,150));
+  addLog('info',`SOAP ${r.status}`,t.slice(0,500));
 
-  if(r.ok || r.status===204){
-    addLog('ok',`Image uploaded via UploadPicture action`,`Job: ${jobNo} · Slot: ${slot}`);
-    return {};
+  if(r.ok){
+    const data = JSON.parse(t);
+    if(data.success){
+      addLog('ok',`Image uploaded to Job Picture`,`Job: ${jobNo} · Slot: ${slot}`);
+      return {};
+    }
+    throw new Error(`SOAP fault: ${data.body?.slice(0,100)}`);
   }
-
-  throw new Error(`Image upload failed ${r.status}: ${t.slice(0,150)}`);
+  throw new Error(`${r.status}: ${t.slice(0,100)}`);
 }
 
 // ── OVERLAY / TOAST ───────────────────────────
@@ -942,6 +951,57 @@ function toast(m,tp){
 }
 
 addLog('info','Portal ready','HO Brothers CAD Portal · BC UAT · Authenticated via Cloudflare Worker');
+
+async function fetchBCImages(jobNo){
+  const gallery = document.getElementById('bcImgGallery');
+  const section = document.getElementById('bcImgSection');
+  if(!gallery||!section) return;
+  gallery.innerHTML = '<div style="font-size:11px;color:#888;">Loading saved images...</div>';
+  section.style.display = 'block';
+
+  try{
+    const co  = encodeURIComponent(CFG.COMPANY);
+    const jn  = encodeURIComponent(jobNo);
+    // Get list of saved image slots
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/AdditionalImagesAPI?$filter=Document_No eq '${jn}'&$top=10`;
+    const r   = await fetch(url);
+    if(!r.ok){ gallery.innerHTML=''; section.style.display='none'; return; }
+    const data = await r.json();
+    const recs = (data.value||[]).filter(rec=>rec.PictureType);
+    if(recs.length===0){ gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;">No saved images</div>'; return; }
+
+    gallery.innerHTML = '';
+    // Fetch each image via SOAP GetPicture
+    for(const rec of recs){
+      const slot = rec.Line_No / 10000;
+      const ph = document.createElement('div');
+      ph.style.cssText='width:72px;height:72px;background:#f0f7ff;border:1px dashed rgba(44,80,120,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;text-align:center;';
+      ph.textContent='Loading...';
+      gallery.appendChild(ph);
+
+      // Fetch via SOAP
+      fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
+      }).then(r=>r.json()).then(d=>{
+        if(d.success && d.base64){
+          const img = document.createElement('img');
+          img.className='bc-img';
+          img.src=`data:${rec.PictureType};base64,${d.base64}`;
+          img.title=rec.Image_Description||'Image '+slot;
+          img.onclick=()=>window.open(img.src,'_blank');
+          ph.replaceWith(img);
+        } else {
+          ph.textContent=rec.Image_Description||'Slot '+slot;
+        }
+      }).catch(()=>{ ph.textContent='Error'; });
+    }
+  }catch(e){
+    gallery.innerHTML='';
+    section.style.display='none';
+  }
+}
 </script>
 </body>
 </html>
