@@ -164,6 +164,41 @@ input::placeholder{color:var(--text3);font-weight:300;}
 .jf-desc{font-size:15px;color:#1A1208;margin-top:5px;font-weight:700;}
 .jf-cust{font-size:12px;color:#1A1410;margin-top:3px;font-family:'JetBrains Mono',monospace;font-weight:500;}
 .sbadge{font-size:9px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;padding:4px 12px;border-radius:20px;border:1px solid;flex-shrink:0;font-weight:700;}
+.bom-wrap{margin-top:14px;padding-top:12px;border-top:1px solid rgba(44,80,120,0.1);}
+.bom-title{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#2C7A7B;font-weight:700;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.bom-edit-btn{font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 10px;border-radius:12px;border:1px solid rgba(240,128,128,0.4);background:rgba(240,128,128,0.08);color:#c0504d;cursor:pointer;}
+.bom-edit-btn:hover{background:rgba(240,128,128,0.15);}
+.bom-table{width:100%;border-collapse:collapse;font-size:11px;}
+.bom-table th{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#2C7A7B;padding:5px 8px;border-bottom:1px solid rgba(44,80,120,0.15);text-align:left;font-weight:700;}
+.bom-table td{padding:6px 8px;border-bottom:1px solid rgba(44,80,120,0.06);color:#1A1410;font-size:11px;}
+.bom-table tr:hover td{background:rgba(44,80,120,0.03);}
+.bom-wt-view{font-weight:600;color:#1A1410;}
+.bom-wt-edit{width:65px;text-align:right;background:#fff;border:1px solid rgba(240,128,128,0.4);border-radius:5px;padding:3px 6px;font-size:11px;font-weight:600;color:#1A1410;display:none;}
+.bom-edit-mode .bom-wt-view{display:none;}
+.bom-edit-mode .bom-wt-edit{display:inline-block;}
+/* Sidebar overlay */
+.bom-sidebar{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,0.12);z-index:1000;transition:right 0.3s ease;display:flex;flex-direction:column;}
+.bom-sidebar.open{right:0;}
+.bom-sb-header{background:linear-gradient(135deg,rgba(20,12,4,0.95),rgba(44,28,8,0.92));padding:20px 20px 16px;color:#F7F0E0;flex-shrink:0;}
+.bom-sb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:2px;}
+.bom-sb-sub{font-size:10px;color:rgba(247,240,224,0.6);letter-spacing:0.15em;text-transform:uppercase;}
+.bom-sb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#F7F0E0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.bom-sb-body{flex:1;overflow-y:auto;padding:16px;}
+.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:10px;padding:14px;margin-bottom:10px;}
+.bom-sb-no{font-family:monospace;font-size:10px;color:#2C7A7B;font-weight:700;margin-bottom:3px;}
+.bom-sb-desc{font-size:12px;font-weight:600;color:#1A1410;margin-bottom:10px;}
+.bom-sb-row{display:flex;align-items:center;gap:10px;}
+.bom-sb-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#888;flex-shrink:0;width:60px;}
+.bom-sb-curr{font-size:12px;font-weight:600;color:#1A1410;width:50px;}
+.bom-sb-input{flex:1;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:7px;padding:7px 10px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
+.bom-sb-input:focus{border-color:#f08080;outline:none;}
+.bom-sb-changed{border-color:#f08080!important;background:rgba(240,128,128,0.04);}
+.bom-sb-footer{padding:14px 16px;border-top:1px solid rgba(44,80,120,0.1);flex-shrink:0;}
+.bom-sb-save{width:100%;background:#f08080;color:#fff;border:none;border-radius:10px;padding:13px;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+.bom-sb-save:hover{background:#e06060;}
+.bom-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:999;display:none;}
+.bom-overlay.open{display:block;}
+.mw-wrap{display:none;}
 .bc-img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid rgba(44,80,120,0.15);cursor:pointer;}
 .bc-img:hover{border-color:#f08080;transform:scale(1.05);transition:0.15s;}
 .jf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
@@ -257,7 +292,42 @@ input::placeholder{color:var(--text3);font-weight:300;}
 @media(max-width:600px){
   .main,.hero{padding-left:16px;padding-right:16px;}
   .card{padding:20px 16px;}
-  .bc-img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid rgba(44,80,120,0.15);cursor:pointer;}
+  .bom-wrap{margin-top:14px;padding-top:12px;border-top:1px solid rgba(44,80,120,0.1);}
+.bom-title{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:#2C7A7B;font-weight:700;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.bom-edit-btn{font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 10px;border-radius:12px;border:1px solid rgba(240,128,128,0.4);background:rgba(240,128,128,0.08);color:#c0504d;cursor:pointer;}
+.bom-edit-btn:hover{background:rgba(240,128,128,0.15);}
+.bom-table{width:100%;border-collapse:collapse;font-size:11px;}
+.bom-table th{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:#2C7A7B;padding:5px 8px;border-bottom:1px solid rgba(44,80,120,0.15);text-align:left;font-weight:700;}
+.bom-table td{padding:6px 8px;border-bottom:1px solid rgba(44,80,120,0.06);color:#1A1410;font-size:11px;}
+.bom-table tr:hover td{background:rgba(44,80,120,0.03);}
+.bom-wt-view{font-weight:600;color:#1A1410;}
+.bom-wt-edit{width:65px;text-align:right;background:#fff;border:1px solid rgba(240,128,128,0.4);border-radius:5px;padding:3px 6px;font-size:11px;font-weight:600;color:#1A1410;display:none;}
+.bom-edit-mode .bom-wt-view{display:none;}
+.bom-edit-mode .bom-wt-edit{display:inline-block;}
+/* Sidebar overlay */
+.bom-sidebar{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:#fff;box-shadow:-4px 0 24px rgba(0,0,0,0.12);z-index:1000;transition:right 0.3s ease;display:flex;flex-direction:column;}
+.bom-sidebar.open{right:0;}
+.bom-sb-header{background:linear-gradient(135deg,rgba(20,12,4,0.95),rgba(44,28,8,0.92));padding:20px 20px 16px;color:#F7F0E0;flex-shrink:0;}
+.bom-sb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:2px;}
+.bom-sb-sub{font-size:10px;color:rgba(247,240,224,0.6);letter-spacing:0.15em;text-transform:uppercase;}
+.bom-sb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#F7F0E0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.bom-sb-body{flex:1;overflow-y:auto;padding:16px;}
+.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:10px;padding:14px;margin-bottom:10px;}
+.bom-sb-no{font-family:monospace;font-size:10px;color:#2C7A7B;font-weight:700;margin-bottom:3px;}
+.bom-sb-desc{font-size:12px;font-weight:600;color:#1A1410;margin-bottom:10px;}
+.bom-sb-row{display:flex;align-items:center;gap:10px;}
+.bom-sb-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#888;flex-shrink:0;width:60px;}
+.bom-sb-curr{font-size:12px;font-weight:600;color:#1A1410;width:50px;}
+.bom-sb-input{flex:1;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:7px;padding:7px 10px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
+.bom-sb-input:focus{border-color:#f08080;outline:none;}
+.bom-sb-changed{border-color:#f08080!important;background:rgba(240,128,128,0.04);}
+.bom-sb-footer{padding:14px 16px;border-top:1px solid rgba(44,80,120,0.1);flex-shrink:0;}
+.bom-sb-save{width:100%;background:#f08080;color:#fff;border:none;border-radius:10px;padding:13px;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+.bom-sb-save:hover{background:#e06060;}
+.bom-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:999;display:none;}
+.bom-overlay.open{display:block;}
+.mw-wrap{display:none;}
+.bc-img{width:72px;height:72px;object-fit:cover;border-radius:8px;border:1px solid rgba(44,80,120,0.15);cursor:pointer;}
 .bc-img:hover{border-color:#f08080;transform:scale(1.05);transition:0.15s;}
 .jf-grid{grid-template-columns:1fr 1fr;}
   .sub-bar{flex-direction:column;align-items:stretch;}
@@ -437,6 +507,37 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
           <div class="jf-item"><div class="jf-k">Status</div><div class="jf-v" id="jStatusVal">—</div></div>
           <div class="jf-item"><div class="jf-k">Customer</div><div class="jf-v" id="jCustShort">—</div></div>
         </div>
+
+        <!-- BOM Items (read-only table + edit sidebar) -->
+        <div id="bomWrap" class="bom-wrap" style="display:none;">
+          <div class="bom-title">
+            <span>BOM Items</span>
+            <button class="bom-edit-btn" onclick="openBOMSidebar()">✏ Edit Weights</button>
+          </div>
+          <table class="bom-table">
+            <thead><tr>
+              <th>Type</th><th>No.</th><th>Description</th>
+              <th style="text-align:right;">Wt/Qty (g)</th>
+              <th style="text-align:center;width:50px;">Edit</th>
+            </tr></thead>
+            <tbody id="bomBody"></tbody>
+          </table>
+        </div>
+
+        <!-- BOM Edit Sidebar -->
+        <div class="bom-overlay" id="bomOverlay" onclick="closeBOMSidebar()"></div>
+        <div class="bom-sidebar" id="bomSidebar">
+          <div class="bom-sb-header" style="position:relative;">
+            <div class="bom-sb-title">Edit BOM Weights</div>
+            <div class="bom-sb-sub" id="bomSbJobNo">Job —</div>
+            <button class="bom-sb-close" onclick="closeBOMSidebar()">×</button>
+          </div>
+          <div class="bom-sb-body" id="bomSbBody"></div>
+          <div class="bom-sb-footer">
+            <button class="bom-sb-save" onclick="saveBOMWeights()">Save Changes to BC</button>
+          </div>
+        </div>
+        <div class="mw-wrap" id="mwWrap" style="display:none;"></div>
 
         <!-- BC Saved Images Gallery -->
         <div id="bcImgSection" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid rgba(44,80,120,0.1);">
@@ -680,6 +781,7 @@ async function doLook(){
 }
 function fd(d){if(!d||d.startsWith('0001'))return'—';return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
 function fillJob(j){
+  window._currentJob=j;
   document.getElementById('jNo').textContent=j.Job_No||'—';
   document.getElementById('jDesc').textContent=j.Description||'—';
   document.getElementById('jCust').textContent=(j.Customer_Name||j.Customer_Name_2||'')+(j.Customer_No?' · '+j.Customer_No:'');
@@ -687,10 +789,19 @@ function fillJob(j){
   document.getElementById('jItem').textContent=j.Item_No||'—';
   document.getElementById('jMetal').textContent=[j.Metal_Type_Code,j.Metal_Code].filter(Boolean).join(' · ')||'—';
   document.getElementById('jDue').textContent=fd(j.Due_Date);
+  // Show metal weight if available
+  const mwEl = document.getElementById('mwInput');
+  const mwSlider = document.getElementById('mwSlider');
+  if(mwEl && j.Total_Metal_Weight){
+    mwEl.value = parseFloat(j.Total_Metal_Weight).toFixed(2);
+    if(mwSlider) mwSlider.value = parseFloat(j.Total_Metal_Weight);
+    document.getElementById('mwDisplay').textContent = parseFloat(j.Total_Metal_Weight).toFixed(2)+'g';
+  }
   document.getElementById('jStage').textContent=j.Customer_Stage_Name||'—';
   document.getElementById('jStatusVal').textContent=j.Status||'—';
   // Fetch and display saved BC images
   fetchBCImages(j.Job_No);
+  fetchBOMLines(j.Job_No);
   const s=(j.Status||'').toLowerCase();
   const b=document.getElementById('jStatus'); b.textContent=j.Status||'—';
   const m={order:{c:'#9A7B2F',bg:'rgba(154,123,47,0.1)',b:'rgba(154,123,47,0.3)'},released:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'},finished:{c:'#2C6A8A',bg:'rgba(44,106,138,0.1)',b:'rgba(44,106,138,0.3)'},shipped:{c:'#276749',bg:'rgba(39,103,73,0.1)',b:'rgba(39,103,73,0.3)'}};
@@ -826,7 +937,11 @@ async function doSub(){
   if(lnk&&lnk.length<=MAX_THINK_LEN){
     try{
       // Use the single-entity PATCH with Job_No as filter
-      await proxyPatchByFilter(job.Job_No,etag,{Vntana_Link:lnk});
+      const mwInput = document.getElementById('mwInput');
+      const mwVal = mwInput ? parseFloat(mwInput.value)||null : null;
+      const patchBody = {Vntana_Link:lnk};
+      if(mwVal!==null) patchBody['Total_Metal_Weight']=mwVal;
+      await proxyPatchByFilter(job.Job_No,etag,patchBody);
       addLog('ok',`Thinkspace link saved: ${job.Job_No}`,`URL: ${lnk}`);
     }catch(e){
       errs.push('Link: '+e.message);
@@ -862,8 +977,24 @@ async function doSub(){
     toast(`Job ${job.Job_No} updated — ${parts.join(', ')}`,'ok');
     document.getElementById('nfBox').classList.remove('on');
     images=[]; renderImgGrid();
+    // Save BOM weight changes
+    await saveBOMWeights();
     addLog('ok',`Job ${job.Job_No} updated successfully`,parts.join(' · '));
     updSub();
+    // Auto-refresh BC images after successful upload
+    setTimeout(()=>{
+      fetchBCImages(job.Job_No);
+  fetchBOMLines(job.Job_No);
+      // Clear image slots
+      for(let i=1;i<=4;i++){
+        const slot=document.getElementById('img'+i);
+        if(slot) slot.innerHTML='';
+        if(typeof imgs!=="undefined") imgs[i-1]=null;
+      }
+      if(typeof imgCount!=="undefined") imgCount=0;
+      updateImgUI();
+      addLog('info','BC images refreshed','Gallery updated with latest from BC');
+    }, 1500);
   }
 }
 
@@ -956,50 +1087,533 @@ async function fetchBCImages(jobNo){
   const gallery = document.getElementById('bcImgGallery');
   const section = document.getElementById('bcImgSection');
   if(!gallery||!section) return;
-  gallery.innerHTML = '<div style="font-size:11px;color:#888;">Loading saved images...</div>';
+  gallery.innerHTML = '<div style="font-size:11px;color:#888;padding:8px;">Loading BC images...</div>';
   section.style.display = 'block';
 
   try{
-    const co  = encodeURIComponent(CFG.COMPANY);
-    const jn  = encodeURIComponent(jobNo);
-    // Get list of saved image slots
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/AdditionalImagesAPI?$filter=Document_No eq '${jn}'&$top=10`;
-    const r   = await fetch(url);
-    if(!r.ok){ gallery.innerHTML=''; section.style.display='none'; return; }
-    const data = await r.json();
-    const recs = (data.value||[]).filter(rec=>rec.PictureType);
-    if(recs.length===0){ gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;">No saved images</div>'; return; }
-
+    // Fetch all 4 slots via SOAP GetPicture — skip blanks
+    let hasImages = false;
     gallery.innerHTML = '';
-    // Fetch each image via SOAP GetPicture
-    for(const rec of recs){
-      const slot = rec.Line_No / 10000;
-      const ph = document.createElement('div');
-      ph.style.cssText='width:72px;height:72px;background:#f0f7ff;border:1px dashed rgba(44,80,120,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#888;text-align:center;';
-      ph.textContent='Loading...';
-      gallery.appendChild(ph);
 
-      // Fetch via SOAP
-      fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
+    for(let slot=1; slot<=4; slot++){
+      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
-      }).then(r=>r.json()).then(d=>{
-        if(d.success && d.base64){
-          const img = document.createElement('img');
-          img.className='bc-img';
-          img.src=`data:${rec.PictureType};base64,${d.base64}`;
-          img.title=rec.Image_Description||'Image '+slot;
-          img.onclick=()=>window.open(img.src,'_blank');
-          ph.replaceWith(img);
-        } else {
-          ph.textContent=rec.Image_Description||'Slot '+slot;
-        }
-      }).catch(()=>{ ph.textContent='Error'; });
+      });
+      const d = await r.json();
+      if(d.success && d.base64 && d.base64.length > 10){
+        hasImages = true;
+        const wrap = document.createElement('div');
+        wrap.style.cssText='position:relative;display:inline-block;';
+        const img = document.createElement('img');
+        img.className='bc-img';
+        img.src=`data:image/png;base64,${d.base64}`;
+        img.title='Slot '+slot+' — click to enlarge';
+        img.onclick=()=>window.open(img.src,'_blank');
+        // Delete button
+        const del = document.createElement('button');
+        del.textContent='×';
+        del.title='Delete this image from BC';
+        del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f08080;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
+        del.onclick=async(e)=>{
+          e.stopPropagation();
+          if(!confirm('Delete this image from BC?')) return;
+          del.textContent='...';
+          await deleteBCImage(jobNo, slot);
+          await fetchBCImages(jobNo);
+        };
+        wrap.appendChild(img);
+        wrap.appendChild(del);
+        gallery.appendChild(wrap);
+      }
+    }
+    if(!hasImages){
+      gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;padding:4px;">No images saved in BC yet</div>';
     }
   }catch(e){
-    gallery.innerHTML='';
-    section.style.display='none';
+    gallery.innerHTML='<div style="font-size:11px;color:#888;">Could not load BC images</div>';
+  }
+}
+
+async function deleteBCImage(jobNo, slot){
+  try{
+    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
+    });
+    addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
+  }catch(e){ addLog('info','Delete error',e.message); }
+}
+
+async function fetchBOMLines(jobNo){
+  const wrap = document.getElementById('bomWrap');
+  const body = document.getElementById('bomBody');
+  if(!wrap||!body) return;
+  wrap.style.display='block';
+  body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;">Loading BOM...</td></tr>';
+
+  try{
+    const co = encodeURIComponent(CFG.COMPANY);
+    const jn = encodeURIComponent(jobNo);
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
+    const r = await fetch(url);
+    const txt = await r.text();
+    addLog('info',`BOM fetch ${r.status}`,txt.slice(0,150));
+    if(!r.ok){ wrap.style.display='none'; return; }
+    const data = JSON.parse(txt);
+    const all = data.value||[];
+    addLog('info',`BOM lines`,`Total: ${all.length} · Items: ${all.filter(l=>l.Type==='Item').length} · Resources: ${all.filter(l=>l.Type==='Resource').length}`);
+    window._bomAllLines = all;
+    window._bomLines = all.filter(l=>l.Type==='Item');
+
+    if(all.length===0){ body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;">No BOM lines found</td></tr>'; return; }
+
+    body.innerHTML='';
+    all.forEach((l,i)=>{
+      const isItem = l.Type==='Item';
+      const wt = (parseFloat(l.Weight_Per)||0).toFixed(2);
+      const tr = document.createElement('tr');
+      tr.style.opacity = isItem?'1':'0.55';
+      tr.innerHTML=`
+        <td style="padding:5px 8px;">
+          <span style="font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;
+            background:${isItem?'rgba(154,123,47,0.1)':'rgba(44,122,123,0.08)'};
+            color:${isItem?'#7B5010':'#2C7A7B'};">${l.Type}</span>
+        </td>
+        <td style="padding:5px 8px;font-family:monospace;font-size:10px;font-weight:600;color:#2C7A7B;">${l.No||'—'}</td>
+        <td style="padding:5px 8px;font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${l.Description||''}">${l.Description||'—'}</td>
+        <td style="padding:5px 8px;text-align:right;font-weight:600;" id="bom-wt-${i}">${wt}</td>
+        <td style="padding:5px 8px;text-align:center;">
+          ${isItem
+            ? `<button onclick="openItemEdit(${i})" style="font-size:9px;padding:2px 8px;border-radius:8px;border:1px solid rgba(240,128,128,0.4);background:rgba(240,128,128,0.08);color:#c0504d;cursor:pointer;font-weight:700;">Edit</button>`
+            : `<span style="font-size:9px;color:#ccc;">—</span>`
+          }
+        </td>`;
+      body.appendChild(tr);
+    });
+    wrap.style.display='block';
+  }catch(e){
+    addLog('err','BOM error',e.message);
+    wrap.style.display='none';
+  }
+}
+
+function openItemEdit(idx){
+  const all = window._bomAllLines||[];
+  const l = all[idx];
+  if(!l) return;
+  document.getElementById('bomSbJobNo').textContent=`Job ${window._currentJob?.Job_No||'—'} · ${l.No||''}`;
+  document.getElementById('bomSbBody').innerHTML=`
+    <div class="bom-sb-item">
+      <div class="bom-sb-no">${l.No||'—'}</div>
+      <div class="bom-sb-desc">${l.Description||'—'}</div>
+      <div class="bom-sb-row" style="margin-top:12px;">
+        <span class="bom-sb-label">Current</span>
+        <span class="bom-sb-curr" style="font-size:14px;font-weight:700;">${(parseFloat(l.Weight_Per)||0).toFixed(2)}g</span>
+      </div>
+      <div class="bom-sb-row" style="margin-top:10px;">
+        <span class="bom-sb-label">New Wt</span>
+        <input type="number" class="bom-sb-input" id="sb-wt-single"
+          data-idx="${idx}" data-orig="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
+          min="0" step="0.01" placeholder="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
+          style="font-size:18px;font-weight:700;padding:10px;border:1px solid rgba(240,128,128,0.4);border-radius:8px;width:120px;text-align:center;">
+        <span style="font-size:12px;color:#888;margin-left:6px;">grams</span>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#888;">Will save when you click "Update Job in BC"</div>
+    </div>`;
+  document.getElementById('bomSidebar').classList.add('open');
+  document.getElementById('bomOverlay').classList.add('open');
+  document.getElementById('sb-wt-single').focus();
+}
+
+function closeBOMSidebar(){
+  // Store the edited value back to the line
+  const inp = document.getElementById('sb-wt-single');
+  if(inp && inp.value){
+    const idx = parseInt(inp.dataset.idx);
+    const newWt = parseFloat(inp.value);
+    if(!isNaN(newWt) && window._bomAllLines?.[idx]){
+      window._bomAllLines[idx]._pendingWt = newWt;
+      // Update view
+      const wtEl = document.getElementById('bom-wt-'+idx);
+      if(wtEl){ wtEl.textContent = newWt.toFixed(2); wtEl.style.color='#f08080'; }
+    }
+  }
+  document.getElementById('bomSidebar').classList.remove('open');
+  document.getElementById('bomOverlay').classList.remove('open');
+}
+
+async function saveBOMWeights(){
+  const all = window._bomAllLines||[];
+  const job = window._currentJob;
+  if(!all.length||!job) return;
+  const co = encodeURIComponent(CFG.COMPANY);
+  let saved=0, errors=0;
+
+  for(let i=0;i<all.length;i++){
+    const l = all[i];
+    if(l.Type!=='Item') continue;
+    if(l._pendingWt===undefined) continue;
+    const newWt = l._pendingWt;
+    const jn = encodeURIComponent(job.Job_No);
+    const jt = encodeURIComponent(l.Job_Type||'Regular');
+    const url=`${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${l.Line_No})`;
+    try{
+      const r=await fetch(url,{method:'PATCH',headers:{'Content-Type':'application/json','If-Match':'*'},body:JSON.stringify({Weight_Per:newWt})});
+      const t=await r.text();
+      addLog('info',`BOM PATCH ${r.status}`,`${l.No}: ${t.slice(0,100)}`);
+      if(r.ok||r.status===204){ saved++; l.Weight_Per=newWt; delete l._pendingWt; }
+      else errors++;
+    }catch(e){ addLog('err','BOM save error',e.message); errors++; }
+  }
+  if(saved>0) addLog('ok',`BOM saved`,`${saved} item weight(s) updated in BC`);
+  if(errors>0) addLog('info',`BOM errors`,`${errors} failed — check logs`);
+}
+
+
+async function fetchBCImages(jobNo){
+  const gallery = document.getElementById('bcImgGallery');
+  const section = document.getElementById('bcImgSection');
+  if(!gallery||!section) return;
+  gallery.innerHTML = '<div style="font-size:11px;color:#888;padding:8px;">Loading BC images...</div>';
+  section.style.display = 'block';
+
+  try{
+    // Fetch all 4 slots via SOAP GetPicture — skip blanks
+    let hasImages = false;
+    gallery.innerHTML = '';
+
+    for(let slot=1; slot<=4; slot++){
+      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
+      });
+      const d = await r.json();
+      if(d.success && d.base64 && d.base64.length > 10){
+        hasImages = true;
+        const wrap = document.createElement('div');
+        wrap.style.cssText='position:relative;display:inline-block;';
+        const img = document.createElement('img');
+        img.className='bc-img';
+        img.src=`data:image/png;base64,${d.base64}`;
+        img.title='Slot '+slot+' — click to enlarge';
+        img.onclick=()=>window.open(img.src,'_blank');
+        // Delete button
+        const del = document.createElement('button');
+        del.textContent='×';
+        del.title='Delete this image from BC';
+        del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f08080;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
+        del.onclick=async(e)=>{
+          e.stopPropagation();
+          if(!confirm('Delete this image from BC?')) return;
+          del.textContent='...';
+          await deleteBCImage(jobNo, slot);
+          await fetchBCImages(jobNo);
+        };
+        wrap.appendChild(img);
+        wrap.appendChild(del);
+        gallery.appendChild(wrap);
+      }
+    }
+    if(!hasImages){
+      gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;padding:4px;">No images saved in BC yet</div>';
+    }
+  }catch(e){
+    gallery.innerHTML='<div style="font-size:11px;color:#888;">Could not load BC images</div>';
+  }
+}
+
+async function deleteBCImage(jobNo, slot){
+  try{
+    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
+    });
+    addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
+  }catch(e){ addLog('info','Delete error',e.message); }
+}
+
+async function fetchBOMLines(jobNo){
+  const wrap = document.getElementById('bomWrap');
+  const body = document.getElementById('bomBody');
+  if(!wrap||!body) return;
+  body.innerHTML='<tr><td colspan="4" style="padding:8px;color:#888;font-size:11px;">Loading items...</td></tr>';
+  wrap.style.display='block';
+
+  try{
+    const co = encodeURIComponent(CFG.COMPANY);
+    const jn = encodeURIComponent(jobNo);
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
+    const r = await fetch(url);
+    if(!r.ok){ wrap.style.display='none'; return; }
+    const data = await r.json();
+    const lines = (data.value||[]).filter(l=>(l.Type||'').toLowerCase()==='item');
+    addLog('info',`BOM loaded`,`Total: ${data.value?.length||0} lines, Items: ${lines.length}`);
+    window._bomLines = lines;
+
+    if(lines.length===0){
+      body.innerHTML='<tr><td colspan="4" style="padding:8px;color:#888;font-size:11px;font-style:italic;">No items in BOM</td></tr>';
+      return;
+    }
+
+    body.innerHTML='';
+    lines.forEach((l,i)=>{
+      const wt = parseFloat(l.Weight_Per)||0;
+      const tw = parseFloat(l.Total_Weight)||0;
+      const tr = document.createElement('tr');
+      tr.innerHTML=`
+        <td style="font-family:monospace;font-size:10px;font-weight:600;color:#2C7A7B;">${l.No||'—'}</td>
+        <td style="font-size:11px;">${l.Description||'—'}</td>
+        <td style="text-align:right;font-weight:600;" id="bom-wt-${i}">${wt.toFixed(2)}</td>
+        <td style="text-align:right;color:#888;">${tw.toFixed(2)}</td>`;
+      body.appendChild(tr);
+    });
+    wrap.style.display='block';
+  }catch(e){ wrap.style.display='none'; }
+}
+
+function openBOMSidebar(){
+  const lines = window._bomLines||[];
+  const job = window._currentJob;
+  if(!lines.length){ addLog('info','No BOM items','Nothing to edit'); return; }
+  document.getElementById('bomSbJobNo').textContent = `Job ${job?.Job_No||'—'}`;
+  const body = document.getElementById('bomSbBody');
+  body.innerHTML='';
+  lines.forEach((l,i)=>{
+    const wt = (parseFloat(l.Weight_Per)||0).toFixed(2);
+    const tw = (parseFloat(l.Total_Weight)||0).toFixed(2);
+    const div = document.createElement('div');
+    div.className='bom-sb-item';
+    div.innerHTML=`
+      <div class="bom-sb-no">${l.No||'—'}</div>
+      <div class="bom-sb-desc">${l.Description||'—'}</div>
+      <div class="bom-sb-row">
+        <span class="bom-sb-label">Current</span>
+        <span class="bom-sb-curr">${wt}g</span>
+        <span style="font-size:11px;color:#888;flex:1;">Total: ${tw}g</span>
+      </div>
+      <div class="bom-sb-row" style="margin-top:8px;">
+        <span class="bom-sb-label">New Wt</span>
+        <input type="number" class="bom-sb-input" id="sb-wt-${i}"
+          data-idx="${i}" data-orig="${wt}" min="0" step="0.01" placeholder="${wt}"
+          oninput="this.classList.toggle('bom-sb-changed',Math.abs(parseFloat(this.value||0)-parseFloat(this.dataset.orig))>0.001)">
+      </div>`;
+    body.appendChild(div);
+  });
+  document.getElementById('bomSidebar').classList.add('open');
+  document.getElementById('bomOverlay').classList.add('open');
+}
+
+function closeBOMSidebar(){
+  document.getElementById('bomSidebar').classList.remove('open');
+  document.getElementById('bomOverlay').classList.remove('open');
+}
+
+async function saveBOMWeights(){
+  const lines = window._bomLines||[];
+  const job = window._currentJob;
+  if(!lines.length||!job) return;
+  const btn = document.querySelector('.bom-sb-save');
+  btn.textContent='Saving...'; btn.disabled=true;
+
+  const co = encodeURIComponent(CFG.COMPANY);
+  let saved=0, skipped=0, errors=0;
+
+  for(let i=0;i<lines.length;i++){
+    const inp = document.getElementById('sb-wt-'+i);
+    if(!inp||!inp.value) { skipped++; continue; }
+    const newWt = parseFloat(inp.value);
+    const oldWt = parseFloat(inp.dataset.orig)||0;
+    if(Math.abs(newWt-oldWt)<0.001){ skipped++; continue; }
+
+    const l = lines[i];
+    const jn = encodeURIComponent(job.Job_No);
+    const jt = encodeURIComponent(l.Job_Type||'Regular');
+    const ln = l.Line_No;
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
+    try{
+      const r = await fetch(url,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','If-Match':'*'},
+        body:JSON.stringify({Weight_Per:newWt})
+      });
+      const t = await r.text();
+      if(r.ok||r.status===204){
+        saved++;
+        lines[i].Weight_Per = newWt;
+        // Update view table
+        const wtEl = document.getElementById('bom-wt-'+i);
+        if(wtEl) wtEl.textContent = newWt.toFixed(2);
+        inp.dataset.orig = newWt;
+        inp.classList.remove('bom-sb-changed');
+      } else {
+        addLog('info',`BOM PATCH ${r.status}`,`${l.No}: ${t.slice(0,100)}`);
+        errors++;
+      }
+    }catch(e){ errors++; }
+  }
+
+  btn.textContent='Save Changes to BC'; btn.disabled=false;
+  if(saved>0){
+    addLog('ok',`BOM weights saved`,`${saved} item(s) updated`);
+    closeBOMSidebar();
+  }
+  if(errors>0) addLog('info',`${errors} BOM error(s)`,'Check logs');
+  if(saved===0&&errors===0) addLog('info','No changes','All weights unchanged');
+}
+
+async function saveBOMWeights(jobNo, jobType){
+  const lines = window._bomLines||[];
+  const inputs = document.querySelectorAll('.bom-wt-input');
+  let saved=0, errors=0;
+  const co = encodeURIComponent(CFG.COMPANY);
+
+  for(const inp of inputs){
+    const idx = parseInt(inp.dataset.idx);
+    const line = lines[idx];
+    if(!line) continue;
+    const newWt = parseFloat(inp.value)||0;
+    const oldWt = parseFloat(line.Weight_Per)||0;
+    if(Math.abs(newWt-oldWt)<0.001) continue; // skip unchanged
+
+    const jt = encodeURIComponent(jobType||line.Job_Type||'Regular');
+    const jn = encodeURIComponent(jobNo);
+    const ln = line.Line_No;
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
+    try{
+      const r = await fetch(url,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','If-Match':'*'},
+        body:JSON.stringify({Weight_Per: newWt})
+      });
+      if(r.ok||r.status===204){
+        saved++;
+        line.Weight_Per = newWt; // update local cache
+      } else {
+        const t=await r.text();
+        addLog('info',`BOM PATCH ${r.status}`,`Line ${ln}: ${t.slice(0,80)}`);
+        errors++;
+      }
+    }catch(e){ errors++; }
+  }
+  if(saved>0) addLog('ok',`BOM weights saved`,`${saved} line(s) updated in BC`);
+  if(errors>0) addLog('info',`BOM ${errors} error(s)`,'Check logs above');
+}
+
+async function fetchBCImages(jobNo){
+  const gallery = document.getElementById('bcImgGallery');
+  const section = document.getElementById('bcImgSection');
+  if(!gallery||!section) return;
+  gallery.innerHTML = '<div style="font-size:11px;color:#888;padding:8px;">Loading BC images...</div>';
+  section.style.display = 'block';
+
+  try{
+    // Fetch all 4 slots via SOAP GetPicture — skip blanks
+    let hasImages = false;
+    gallery.innerHTML = '';
+
+    for(let slot=1; slot<=4; slot++){
+      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
+      });
+      const d = await r.json();
+      if(d.success && d.base64 && d.base64.length > 10){
+        hasImages = true;
+        const wrap = document.createElement('div');
+        wrap.style.cssText='position:relative;display:inline-block;';
+        const img = document.createElement('img');
+        img.className='bc-img';
+        img.src=`data:image/png;base64,${d.base64}`;
+        img.title='Slot '+slot+' — click to enlarge';
+        img.onclick=()=>window.open(img.src,'_blank');
+        // Delete button
+        const del = document.createElement('button');
+        del.textContent='×';
+        del.title='Delete this image from BC';
+        del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f08080;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
+        del.onclick=async(e)=>{
+          e.stopPropagation();
+          if(!confirm('Delete this image from BC?')) return;
+          del.textContent='...';
+          await deleteBCImage(jobNo, slot);
+          await fetchBCImages(jobNo);
+        };
+        wrap.appendChild(img);
+        wrap.appendChild(del);
+        gallery.appendChild(wrap);
+      }
+    }
+    if(!hasImages){
+      gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;padding:4px;">No images saved in BC yet</div>';
+    }
+  }catch(e){
+    gallery.innerHTML='<div style="font-size:11px;color:#888;">Could not load BC images</div>';
+  }
+}
+
+async function deleteBCImage(jobNo, slot){
+  try{
+    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
+    });
+    addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
+  }catch(e){ addLog('info','Delete error',e.message); }
+}
+
+async function fetchBOMLines(jobNo){
+  const wrap = document.getElementById('bomWrap');
+  const body = document.getElementById('bomBody');
+  const mwWrap = document.getElementById('mwWrap');
+  if(!wrap||!body) return;
+
+  try{
+    const co = encodeURIComponent(CFG.COMPANY);
+    const jn = encodeURIComponent(jobNo);
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=100&$orderby=Line_No`;
+    const r = await fetch(url);
+    if(!r.ok){ wrap.style.display='none'; return; }
+    const data = await r.json();
+    const lines = data.value||[];
+    if(lines.length===0){ wrap.style.display='none'; return; }
+
+    body.innerHTML='';
+    let totalWt = 0;
+    lines.forEach(l=>{
+      const tw = parseFloat(l.Total_Weight)||0;
+      totalWt += tw;
+      const tr = document.createElement('tr');
+      const typeClass = (l.Type||'').toLowerCase()==='resource'?'resource':'item';
+      tr.innerHTML=`
+        <td><span class="bom-type ${typeClass}">${l.Type||'—'}</span></td>
+        <td style="font-family:monospace;font-size:10px;">${l.No_||l['No.']||'—'}</td>
+        <td>${l.Description||'—'}</td>
+        <td style="text-align:right;">${(parseFloat(l.Weight_Per)||0).toFixed(2)}</td>
+        <td style="text-align:right;font-weight:600;">${tw.toFixed(2)}</td>`;
+      body.appendChild(tr);
+    });
+
+    document.getElementById('bomTotalWt').textContent = `Total: ${totalWt.toFixed(2)}g`;
+    wrap.style.display='block';
+
+    // Set metal weight slider from job data
+    const mwVal = parseFloat(window._currentJob?.Total_Metal_Weight)||totalWt||0;
+    if(mwWrap){
+      document.getElementById('mwSlider').value = mwVal;
+      document.getElementById('mwInput').value = mwVal.toFixed(2);
+      document.getElementById('mwDisplay').textContent = mwVal.toFixed(2)+'g';
+      document.getElementById('mwSlider').max = Math.max(50, mwVal*2);
+      mwWrap.style.display='block';
+    }
+  }catch(e){
+    wrap.style.display='none';
   }
 }
 </script>
