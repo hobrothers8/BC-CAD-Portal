@@ -183,14 +183,14 @@ input::placeholder{color:var(--text3);font-weight:300;}
 .bom-sb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:2px;}
 .bom-sb-sub{font-size:10px;color:rgba(247,240,224,0.6);letter-spacing:0.15em;text-transform:uppercase;}
 .bom-sb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#F7F0E0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.bom-sb-body{flex:1;overflow-y:auto;padding:16px;}
-.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:10px;padding:14px;margin-bottom:10px;}
+.bom-sb-body{max-height:calc(100vh - 220px);overflow-y:auto;padding:16px;}
+.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
 .bom-sb-no{font-family:monospace;font-size:10px;color:#2C7A7B;font-weight:700;margin-bottom:3px;}
 .bom-sb-desc{font-size:12px;font-weight:600;color:#1A1410;margin-bottom:10px;}
 .bom-sb-row{display:flex;align-items:center;gap:10px;}
 .bom-sb-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#888;flex-shrink:0;width:60px;}
 .bom-sb-curr{font-size:12px;font-weight:600;color:#1A1410;width:50px;}
-.bom-sb-input{flex:1;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:7px;padding:7px 10px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
+.bom-sb-input{width:100px;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:6px;padding:6px 8px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
 .bom-sb-input:focus{border-color:#f08080;outline:none;}
 .bom-sb-changed{border-color:#f08080!important;background:rgba(240,128,128,0.04);}
 .bom-sb-footer{padding:14px 16px;border-top:1px solid rgba(44,80,120,0.1);flex-shrink:0;}
@@ -311,14 +311,14 @@ input::placeholder{color:var(--text3);font-weight:300;}
 .bom-sb-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:2px;}
 .bom-sb-sub{font-size:10px;color:rgba(247,240,224,0.6);letter-spacing:0.15em;text-transform:uppercase;}
 .bom-sb-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#F7F0E0;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.bom-sb-body{flex:1;overflow-y:auto;padding:16px;}
-.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:10px;padding:14px;margin-bottom:10px;}
+.bom-sb-body{max-height:calc(100vh - 220px);overflow-y:auto;padding:16px;}
+.bom-sb-item{background:#f8fbff;border:1px solid rgba(44,80,120,0.12);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
 .bom-sb-no{font-family:monospace;font-size:10px;color:#2C7A7B;font-weight:700;margin-bottom:3px;}
 .bom-sb-desc{font-size:12px;font-weight:600;color:#1A1410;margin-bottom:10px;}
 .bom-sb-row{display:flex;align-items:center;gap:10px;}
 .bom-sb-label{font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:#888;flex-shrink:0;width:60px;}
 .bom-sb-curr{font-size:12px;font-weight:600;color:#1A1410;width:50px;}
-.bom-sb-input{flex:1;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:7px;padding:7px 10px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
+.bom-sb-input{width:100px;background:#fff;border:1px solid rgba(44,80,120,0.2);border-radius:6px;padding:6px 8px;font-size:13px;font-weight:600;color:#1A1410;text-align:center;}
 .bom-sb-input:focus{border-color:#f08080;outline:none;}
 .bom-sb-changed{border-color:#f08080!important;background:rgba(240,128,128,0.04);}
 .bom-sb-footer{padding:14px 16px;border-top:1px solid rgba(44,80,120,0.1);flex-shrink:0;}
@@ -480,7 +480,7 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
       <div class="flbl">Job Number <span class="req">*</span></div>
       <div class="frow">
         <input type="text" id="jobIn" placeholder="e.g. J074361 or J079335"
-          oninput="onJobIn()" onkeydown="if(event.key==='Enter')doLook()">
+          oninput="document.getElementById('btnLook').disabled=!this.value.trim()" onkeydown="if(event.key==='Enter')doLook()">
         <button class="btn-look" id="btnLook" onclick="doLook()" disabled>
           <span id="lookLbl">Lookup</span>
         </button>
@@ -534,7 +534,7 @@ const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.
           </div>
           <div class="bom-sb-body" id="bomSbBody"></div>
           <div class="bom-sb-footer">
-            <button class="bom-sb-save" onclick="saveBOMWeights()">Save Changes to BC</button>
+            <button class="bom-sb-save" onclick="saveBOMWeightsFromSidebar()">Save Changes to BC</button>
           </div>
         </div>
         <div class="mw-wrap" id="mwWrap" style="display:none;"></div>
@@ -989,10 +989,9 @@ async function doSub(){
       for(let i=1;i<=4;i++){
         const slot=document.getElementById('img'+i);
         if(slot) slot.innerHTML='';
-        if(typeof imgs!=="undefined") imgs[i-1]=null;
+        
       }
-      if(typeof imgCount!=="undefined") imgCount=0;
-      updateImgUI();
+      try{ document.getElementById('imgCount').textContent=''; }catch(_){}
       addLog('info','BC images refreshed','Gallery updated with latest from BC');
     }, 1500);
   }
@@ -1083,6 +1082,135 @@ function toast(m,tp){
 
 addLog('info','Portal ready','HO Brothers CAD Portal · BC UAT · Authenticated via Cloudflare Worker');
 
+
+
+function openItemEdit(idx){
+  const all = window._bomAllLines||[];
+  const l = all[idx];
+  if(!l) return;
+  document.getElementById('bomSbJobNo').textContent=`Job ${window._currentJob?.Job_No||'—'} · ${l.No||''}`;
+  document.getElementById('bomSbBody').innerHTML=`
+    <div class="bom-sb-item">
+      <div class="bom-sb-no">${l.No||'—'}</div>
+      <div class="bom-sb-desc">${l.Description||'—'}</div>
+      <div class="bom-sb-row" style="margin-top:12px;">
+        <span class="bom-sb-label">Current</span>
+        <span class="bom-sb-curr" style="font-size:14px;font-weight:700;">${(parseFloat(l.Weight_Per)||0).toFixed(2)}g</span>
+      </div>
+      <div class="bom-sb-row" style="margin-top:10px;">
+        <span class="bom-sb-label">New Wt</span>
+        <input type="number" class="bom-sb-input" id="sb-wt-single"
+          data-idx="${idx}" data-orig="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
+          min="0" step="0.01" placeholder="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
+          style="font-size:18px;font-weight:700;padding:10px;border:1px solid rgba(240,128,128,0.4);border-radius:8px;width:120px;text-align:center;">
+        <span style="font-size:12px;color:#888;margin-left:6px;">grams</span>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:#888;">Will save when you click "Update Job in BC"</div>
+    </div>`;
+  document.getElementById('bomSidebar').classList.add('open');
+  document.getElementById('bomOverlay').classList.add('open');
+  document.getElementById('sb-wt-single').focus();
+}
+
+
+async 
+
+
+function openBOMSidebar(){
+  const lines = window._bomLines||[];
+  const job = window._currentJob;
+  if(!lines.length){ addLog('info','No BOM items','Nothing to edit'); return; }
+  document.getElementById('bomSbJobNo').textContent = `Job ${job?.Job_No||'—'}`;
+  const body = document.getElementById('bomSbBody');
+  body.innerHTML='';
+  lines.forEach((l,i)=>{
+    const wt = (parseFloat(l.Weight_Per)||0).toFixed(2);
+    const tw = (parseFloat(l.Total_Weight)||0).toFixed(2);
+    const div = document.createElement('div');
+    div.className='bom-sb-item';
+    div.innerHTML=`
+      <div class="bom-sb-no">${l.No||'—'}</div>
+      <div class="bom-sb-desc">${l.Description||'—'}</div>
+      <div class="bom-sb-row">
+        <span class="bom-sb-label">CURRENT</span>
+        <span class="bom-sb-curr">${wt}g</span>
+      </div>
+      <div class="bom-sb-row" style="margin-top:6px;align-items:center;">
+        <span class="bom-sb-label">NEW WT</span>
+        <input type="number" class="bom-sb-input" id="sb-wt-${i}"
+          data-idx="${i}" data-orig="${wt}" min="0" step="0.01" placeholder="${wt}"
+          oninput="this.classList.toggle('bom-sb-changed',Math.abs(parseFloat(this.value||0)-parseFloat(this.dataset.orig))>0.001)">
+        <span style="font-size:11px;color:#666;margin-left:4px;">grams</span>
+      </div>
+      <div style="font-size:10px;color:#888;margin-top:4px;">Will save when you click "Update Job in BC"</div>`;
+    body.appendChild(div);
+  });
+  document.getElementById('bomSidebar').classList.add('open');
+  document.getElementById('bomOverlay').classList.add('open');
+}
+
+function closeBOMSidebar(){
+  document.getElementById('bomSidebar').classList.remove('open');
+  document.getElementById('bomOverlay').classList.remove('open');
+}
+
+function saveBOMWeightsFromSidebar(){
+  const job = window._currentJob;
+  if(!job){
+    addLog('error','No job loaded','Cannot save BOM weights');
+    return;
+  }
+  saveBOMWeights(job.Job_No, job.Job_Type);
+}
+
+async 
+async function saveBOMWeights(jobNo, jobType){
+  const lines = window._bomLines||[];
+  const inputs = document.querySelectorAll('.bom-sb-input');
+  let saved=0, errors=0;
+  const co = encodeURIComponent(CFG.COMPANY);
+
+  for(const inp of inputs){
+    const idx = parseInt(inp.dataset.idx);
+    const line = lines[idx];
+    if(!line) continue;
+    const newWt = parseFloat(inp.value)||0;
+    const oldWt = parseFloat(line.Weight_Per)||0;
+    if(Math.abs(newWt-oldWt)<0.001) continue; // skip unchanged
+
+    const jt = encodeURIComponent(jobType||line.Job_Type||'Regular');
+    const jn = encodeURIComponent(jobNo);
+    const ln = line.Line_No;
+    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
+    try{
+      const r = await fetch(url,{
+        method:'PATCH',
+        headers:{'Content-Type':'application/json','If-Match':'*'},
+        body:JSON.stringify({Weight_Per: newWt})
+      });
+      if(r.ok||r.status===204){
+        saved++;
+        line.Weight_Per = newWt; // update local cache
+        addLog('ok',`BOM Line ${ln} saved`,`Weight: ${newWt}g`);
+      } else {
+        const t=await r.text();
+        addLog('error',`BOM PATCH ${r.status}`,`Line ${ln}: ${t.slice(0,80)}`);
+        errors++;
+      }
+    }catch(e){ 
+      addLog('error',`BOM save failed`,`Line ${ln}: ${e.message}`);
+      errors++; 
+    }
+  }
+  if(saved>0){ 
+    addLog('ok',`BOM weights saved`,`${saved} line(s) updated in BC`);
+    // Refresh the BOM display
+    await fetchBOMLines(jobNo);
+  }
+  if(errors>0) addLog('error',`BOM ${errors} error(s)`,'Check logs above');
+  closeBOMSidebar();
+}
+
 async function fetchBCImages(jobNo){
   const gallery = document.getElementById('bcImgGallery');
   const section = document.getElementById('bcImgSection');
@@ -1153,469 +1281,40 @@ async function fetchBOMLines(jobNo){
   if(!wrap||!body) return;
   wrap.style.display='block';
   body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;">Loading BOM...</td></tr>';
-
   try{
     const co = encodeURIComponent(CFG.COMPANY);
     const jn = encodeURIComponent(jobNo);
     const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
     const r = await fetch(url);
     const txt = await r.text();
-    addLog('info',`BOM fetch ${r.status}`,txt.slice(0,150));
+    addLog('info',`BOM fetch ${r.status}`,txt.slice(0,120));
     if(!r.ok){ wrap.style.display='none'; return; }
     const data = JSON.parse(txt);
     const all = data.value||[];
-    addLog('info',`BOM lines`,`Total: ${all.length} · Items: ${all.filter(l=>l.Type==='Item').length} · Resources: ${all.filter(l=>l.Type==='Resource').length}`);
+    addLog('info',`BOM`,`${all.length} lines · ${all.filter(l=>l.Type==='Item').length} items · ${all.filter(l=>l.Type==='Resource').length} resources`);
     window._bomAllLines = all;
-    window._bomLines = all.filter(l=>l.Type==='Item');
-
-    if(all.length===0){ body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;">No BOM lines found</td></tr>'; return; }
-
+    window._bomLines = all; // Store for bulk edit sidebar
+    if(all.length===0){ body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;font-style:italic;">No BOM lines</td></tr>'; return; }
     body.innerHTML='';
     all.forEach((l,i)=>{
       const isItem = l.Type==='Item';
       const wt = (parseFloat(l.Weight_Per)||0).toFixed(2);
       const tr = document.createElement('tr');
-      tr.style.opacity = isItem?'1':'0.55';
+      tr.style.opacity = isItem?'1':'0.5';
       tr.innerHTML=`
-        <td style="padding:5px 8px;">
-          <span style="font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;
-            background:${isItem?'rgba(154,123,47,0.1)':'rgba(44,122,123,0.08)'};
-            color:${isItem?'#7B5010':'#2C7A7B'};">${l.Type}</span>
-        </td>
+        <td style="padding:5px 8px;"><span style="font-size:9px;padding:2px 7px;border-radius:10px;font-weight:700;background:${isItem?'rgba(154,123,47,0.1)':'rgba(44,122,123,0.08)'};color:${isItem?'#7B5010':'#2C7A7B'};">${l.Type}</span></td>
         <td style="padding:5px 8px;font-family:monospace;font-size:10px;font-weight:600;color:#2C7A7B;">${l.No||'—'}</td>
-        <td style="padding:5px 8px;font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${l.Description||''}">${l.Description||'—'}</td>
+        <td style="padding:5px 8px;font-size:11px;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${l.Description||''}">${l.Description||'—'}</td>
         <td style="padding:5px 8px;text-align:right;font-weight:600;" id="bom-wt-${i}">${wt}</td>
-        <td style="padding:5px 8px;text-align:center;">
-          ${isItem
-            ? `<button onclick="openItemEdit(${i})" style="font-size:9px;padding:2px 8px;border-radius:8px;border:1px solid rgba(240,128,128,0.4);background:rgba(240,128,128,0.08);color:#c0504d;cursor:pointer;font-weight:700;">Edit</button>`
-            : `<span style="font-size:9px;color:#ccc;">—</span>`
-          }
-        </td>`;
+        <td style="padding:5px 8px;text-align:center;">${isItem?`<button onclick="openItemEdit(${i})" style="font-size:9px;padding:2px 8px;border-radius:8px;border:1px solid rgba(240,128,128,0.4);background:rgba(240,128,128,0.08);color:#c0504d;cursor:pointer;font-weight:700;">Edit</button>`:'—'}</td>`;
       body.appendChild(tr);
     });
-    wrap.style.display='block';
   }catch(e){
     addLog('err','BOM error',e.message);
     wrap.style.display='none';
   }
 }
 
-function openItemEdit(idx){
-  const all = window._bomAllLines||[];
-  const l = all[idx];
-  if(!l) return;
-  document.getElementById('bomSbJobNo').textContent=`Job ${window._currentJob?.Job_No||'—'} · ${l.No||''}`;
-  document.getElementById('bomSbBody').innerHTML=`
-    <div class="bom-sb-item">
-      <div class="bom-sb-no">${l.No||'—'}</div>
-      <div class="bom-sb-desc">${l.Description||'—'}</div>
-      <div class="bom-sb-row" style="margin-top:12px;">
-        <span class="bom-sb-label">Current</span>
-        <span class="bom-sb-curr" style="font-size:14px;font-weight:700;">${(parseFloat(l.Weight_Per)||0).toFixed(2)}g</span>
-      </div>
-      <div class="bom-sb-row" style="margin-top:10px;">
-        <span class="bom-sb-label">New Wt</span>
-        <input type="number" class="bom-sb-input" id="sb-wt-single"
-          data-idx="${idx}" data-orig="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
-          min="0" step="0.01" placeholder="${(parseFloat(l.Weight_Per)||0).toFixed(2)}"
-          style="font-size:18px;font-weight:700;padding:10px;border:1px solid rgba(240,128,128,0.4);border-radius:8px;width:120px;text-align:center;">
-        <span style="font-size:12px;color:#888;margin-left:6px;">grams</span>
-      </div>
-      <div style="margin-top:8px;font-size:10px;color:#888;">Will save when you click "Update Job in BC"</div>
-    </div>`;
-  document.getElementById('bomSidebar').classList.add('open');
-  document.getElementById('bomOverlay').classList.add('open');
-  document.getElementById('sb-wt-single').focus();
-}
-
-function closeBOMSidebar(){
-  // Store the edited value back to the line
-  const inp = document.getElementById('sb-wt-single');
-  if(inp && inp.value){
-    const idx = parseInt(inp.dataset.idx);
-    const newWt = parseFloat(inp.value);
-    if(!isNaN(newWt) && window._bomAllLines?.[idx]){
-      window._bomAllLines[idx]._pendingWt = newWt;
-      // Update view
-      const wtEl = document.getElementById('bom-wt-'+idx);
-      if(wtEl){ wtEl.textContent = newWt.toFixed(2); wtEl.style.color='#f08080'; }
-    }
-  }
-  document.getElementById('bomSidebar').classList.remove('open');
-  document.getElementById('bomOverlay').classList.remove('open');
-}
-
-async function saveBOMWeights(){
-  const all = window._bomAllLines||[];
-  const job = window._currentJob;
-  if(!all.length||!job) return;
-  const co = encodeURIComponent(CFG.COMPANY);
-  let saved=0, errors=0;
-
-  for(let i=0;i<all.length;i++){
-    const l = all[i];
-    if(l.Type!=='Item') continue;
-    if(l._pendingWt===undefined) continue;
-    const newWt = l._pendingWt;
-    const jn = encodeURIComponent(job.Job_No);
-    const jt = encodeURIComponent(l.Job_Type||'Regular');
-    const url=`${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${l.Line_No})`;
-    try{
-      const r=await fetch(url,{method:'PATCH',headers:{'Content-Type':'application/json','If-Match':'*'},body:JSON.stringify({Weight_Per:newWt})});
-      const t=await r.text();
-      addLog('info',`BOM PATCH ${r.status}`,`${l.No}: ${t.slice(0,100)}`);
-      if(r.ok||r.status===204){ saved++; l.Weight_Per=newWt; delete l._pendingWt; }
-      else errors++;
-    }catch(e){ addLog('err','BOM save error',e.message); errors++; }
-  }
-  if(saved>0) addLog('ok',`BOM saved`,`${saved} item weight(s) updated in BC`);
-  if(errors>0) addLog('info',`BOM errors`,`${errors} failed — check logs`);
-}
-
-
-async function fetchBCImages(jobNo){
-  const gallery = document.getElementById('bcImgGallery');
-  const section = document.getElementById('bcImgSection');
-  if(!gallery||!section) return;
-  gallery.innerHTML = '<div style="font-size:11px;color:#888;padding:8px;">Loading BC images...</div>';
-  section.style.display = 'block';
-
-  try{
-    // Fetch all 4 slots via SOAP GetPicture — skip blanks
-    let hasImages = false;
-    gallery.innerHTML = '';
-
-    for(let slot=1; slot<=4; slot++){
-      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
-      });
-      const d = await r.json();
-      if(d.success && d.base64 && d.base64.length > 10){
-        hasImages = true;
-        const wrap = document.createElement('div');
-        wrap.style.cssText='position:relative;display:inline-block;';
-        const img = document.createElement('img');
-        img.className='bc-img';
-        img.src=`data:image/png;base64,${d.base64}`;
-        img.title='Slot '+slot+' — click to enlarge';
-        img.onclick=()=>window.open(img.src,'_blank');
-        // Delete button
-        const del = document.createElement('button');
-        del.textContent='×';
-        del.title='Delete this image from BC';
-        del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f08080;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
-        del.onclick=async(e)=>{
-          e.stopPropagation();
-          if(!confirm('Delete this image from BC?')) return;
-          del.textContent='...';
-          await deleteBCImage(jobNo, slot);
-          await fetchBCImages(jobNo);
-        };
-        wrap.appendChild(img);
-        wrap.appendChild(del);
-        gallery.appendChild(wrap);
-      }
-    }
-    if(!hasImages){
-      gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;padding:4px;">No images saved in BC yet</div>';
-    }
-  }catch(e){
-    gallery.innerHTML='<div style="font-size:11px;color:#888;">Could not load BC images</div>';
-  }
-}
-
-async function deleteBCImage(jobNo, slot){
-  try{
-    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
-    });
-    addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
-  }catch(e){ addLog('info','Delete error',e.message); }
-}
-
-async function fetchBOMLines(jobNo){
-  const wrap = document.getElementById('bomWrap');
-  const body = document.getElementById('bomBody');
-  if(!wrap||!body) return;
-  body.innerHTML='<tr><td colspan="4" style="padding:8px;color:#888;font-size:11px;">Loading items...</td></tr>';
-  wrap.style.display='block';
-
-  try{
-    const co = encodeURIComponent(CFG.COMPANY);
-    const jn = encodeURIComponent(jobNo);
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
-    const r = await fetch(url);
-    if(!r.ok){ wrap.style.display='none'; return; }
-    const data = await r.json();
-    const lines = (data.value||[]).filter(l=>(l.Type||'').toLowerCase()==='item');
-    addLog('info',`BOM loaded`,`Total: ${data.value?.length||0} lines, Items: ${lines.length}`);
-    window._bomLines = lines;
-
-    if(lines.length===0){
-      body.innerHTML='<tr><td colspan="4" style="padding:8px;color:#888;font-size:11px;font-style:italic;">No items in BOM</td></tr>';
-      return;
-    }
-
-    body.innerHTML='';
-    lines.forEach((l,i)=>{
-      const wt = parseFloat(l.Weight_Per)||0;
-      const tw = parseFloat(l.Total_Weight)||0;
-      const tr = document.createElement('tr');
-      tr.innerHTML=`
-        <td style="font-family:monospace;font-size:10px;font-weight:600;color:#2C7A7B;">${l.No||'—'}</td>
-        <td style="font-size:11px;">${l.Description||'—'}</td>
-        <td style="text-align:right;font-weight:600;" id="bom-wt-${i}">${wt.toFixed(2)}</td>
-        <td style="text-align:right;color:#888;">${tw.toFixed(2)}</td>`;
-      body.appendChild(tr);
-    });
-    wrap.style.display='block';
-  }catch(e){ wrap.style.display='none'; }
-}
-
-function openBOMSidebar(){
-  const lines = window._bomLines||[];
-  const job = window._currentJob;
-  if(!lines.length){ addLog('info','No BOM items','Nothing to edit'); return; }
-  document.getElementById('bomSbJobNo').textContent = `Job ${job?.Job_No||'—'}`;
-  const body = document.getElementById('bomSbBody');
-  body.innerHTML='';
-  lines.forEach((l,i)=>{
-    const wt = (parseFloat(l.Weight_Per)||0).toFixed(2);
-    const tw = (parseFloat(l.Total_Weight)||0).toFixed(2);
-    const div = document.createElement('div');
-    div.className='bom-sb-item';
-    div.innerHTML=`
-      <div class="bom-sb-no">${l.No||'—'}</div>
-      <div class="bom-sb-desc">${l.Description||'—'}</div>
-      <div class="bom-sb-row">
-        <span class="bom-sb-label">Current</span>
-        <span class="bom-sb-curr">${wt}g</span>
-        <span style="font-size:11px;color:#888;flex:1;">Total: ${tw}g</span>
-      </div>
-      <div class="bom-sb-row" style="margin-top:8px;">
-        <span class="bom-sb-label">New Wt</span>
-        <input type="number" class="bom-sb-input" id="sb-wt-${i}"
-          data-idx="${i}" data-orig="${wt}" min="0" step="0.01" placeholder="${wt}"
-          oninput="this.classList.toggle('bom-sb-changed',Math.abs(parseFloat(this.value||0)-parseFloat(this.dataset.orig))>0.001)">
-      </div>`;
-    body.appendChild(div);
-  });
-  document.getElementById('bomSidebar').classList.add('open');
-  document.getElementById('bomOverlay').classList.add('open');
-}
-
-function closeBOMSidebar(){
-  document.getElementById('bomSidebar').classList.remove('open');
-  document.getElementById('bomOverlay').classList.remove('open');
-}
-
-async function saveBOMWeights(){
-  const lines = window._bomLines||[];
-  const job = window._currentJob;
-  if(!lines.length||!job) return;
-  const btn = document.querySelector('.bom-sb-save');
-  btn.textContent='Saving...'; btn.disabled=true;
-
-  const co = encodeURIComponent(CFG.COMPANY);
-  let saved=0, skipped=0, errors=0;
-
-  for(let i=0;i<lines.length;i++){
-    const inp = document.getElementById('sb-wt-'+i);
-    if(!inp||!inp.value) { skipped++; continue; }
-    const newWt = parseFloat(inp.value);
-    const oldWt = parseFloat(inp.dataset.orig)||0;
-    if(Math.abs(newWt-oldWt)<0.001){ skipped++; continue; }
-
-    const l = lines[i];
-    const jn = encodeURIComponent(job.Job_No);
-    const jt = encodeURIComponent(l.Job_Type||'Regular');
-    const ln = l.Line_No;
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
-    try{
-      const r = await fetch(url,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json','If-Match':'*'},
-        body:JSON.stringify({Weight_Per:newWt})
-      });
-      const t = await r.text();
-      if(r.ok||r.status===204){
-        saved++;
-        lines[i].Weight_Per = newWt;
-        // Update view table
-        const wtEl = document.getElementById('bom-wt-'+i);
-        if(wtEl) wtEl.textContent = newWt.toFixed(2);
-        inp.dataset.orig = newWt;
-        inp.classList.remove('bom-sb-changed');
-      } else {
-        addLog('info',`BOM PATCH ${r.status}`,`${l.No}: ${t.slice(0,100)}`);
-        errors++;
-      }
-    }catch(e){ errors++; }
-  }
-
-  btn.textContent='Save Changes to BC'; btn.disabled=false;
-  if(saved>0){
-    addLog('ok',`BOM weights saved`,`${saved} item(s) updated`);
-    closeBOMSidebar();
-  }
-  if(errors>0) addLog('info',`${errors} BOM error(s)`,'Check logs');
-  if(saved===0&&errors===0) addLog('info','No changes','All weights unchanged');
-}
-
-async function saveBOMWeights(jobNo, jobType){
-  const lines = window._bomLines||[];
-  const inputs = document.querySelectorAll('.bom-wt-input');
-  let saved=0, errors=0;
-  const co = encodeURIComponent(CFG.COMPANY);
-
-  for(const inp of inputs){
-    const idx = parseInt(inp.dataset.idx);
-    const line = lines[idx];
-    if(!line) continue;
-    const newWt = parseFloat(inp.value)||0;
-    const oldWt = parseFloat(line.Weight_Per)||0;
-    if(Math.abs(newWt-oldWt)<0.001) continue; // skip unchanged
-
-    const jt = encodeURIComponent(jobType||line.Job_Type||'Regular');
-    const jn = encodeURIComponent(jobNo);
-    const ln = line.Line_No;
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
-    try{
-      const r = await fetch(url,{
-        method:'PATCH',
-        headers:{'Content-Type':'application/json','If-Match':'*'},
-        body:JSON.stringify({Weight_Per: newWt})
-      });
-      if(r.ok||r.status===204){
-        saved++;
-        line.Weight_Per = newWt; // update local cache
-      } else {
-        const t=await r.text();
-        addLog('info',`BOM PATCH ${r.status}`,`Line ${ln}: ${t.slice(0,80)}`);
-        errors++;
-      }
-    }catch(e){ errors++; }
-  }
-  if(saved>0) addLog('ok',`BOM weights saved`,`${saved} line(s) updated in BC`);
-  if(errors>0) addLog('info',`BOM ${errors} error(s)`,'Check logs above');
-}
-
-async function fetchBCImages(jobNo){
-  const gallery = document.getElementById('bcImgGallery');
-  const section = document.getElementById('bcImgSection');
-  if(!gallery||!section) return;
-  gallery.innerHTML = '<div style="font-size:11px;color:#888;padding:8px;">Loading BC images...</div>';
-  section.style.display = 'block';
-
-  try{
-    // Fetch all 4 slots via SOAP GetPicture — skip blanks
-    let hasImages = false;
-    gallery.innerHTML = '';
-
-    for(let slot=1; slot<=4; slot++){
-      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
-      });
-      const d = await r.json();
-      if(d.success && d.base64 && d.base64.length > 10){
-        hasImages = true;
-        const wrap = document.createElement('div');
-        wrap.style.cssText='position:relative;display:inline-block;';
-        const img = document.createElement('img');
-        img.className='bc-img';
-        img.src=`data:image/png;base64,${d.base64}`;
-        img.title='Slot '+slot+' — click to enlarge';
-        img.onclick=()=>window.open(img.src,'_blank');
-        // Delete button
-        const del = document.createElement('button');
-        del.textContent='×';
-        del.title='Delete this image from BC';
-        del.style.cssText='position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#f08080;color:#fff;border:none;cursor:pointer;font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;font-weight:700;z-index:2;';
-        del.onclick=async(e)=>{
-          e.stopPropagation();
-          if(!confirm('Delete this image from BC?')) return;
-          del.textContent='...';
-          await deleteBCImage(jobNo, slot);
-          await fetchBCImages(jobNo);
-        };
-        wrap.appendChild(img);
-        wrap.appendChild(del);
-        gallery.appendChild(wrap);
-      }
-    }
-    if(!hasImages){
-      gallery.innerHTML='<div style="font-size:11px;color:#888;font-style:italic;padding:4px;">No images saved in BC yet</div>';
-    }
-  }catch(e){
-    gallery.innerHTML='<div style="font-size:11px;color:#888;">Could not load BC images</div>';
-  }
-}
-
-async function deleteBCImage(jobNo, slot){
-  try{
-    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
-    });
-    addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
-  }catch(e){ addLog('info','Delete error',e.message); }
-}
-
-async function fetchBOMLines(jobNo){
-  const wrap = document.getElementById('bomWrap');
-  const body = document.getElementById('bomBody');
-  const mwWrap = document.getElementById('mwWrap');
-  if(!wrap||!body) return;
-
-  try{
-    const co = encodeURIComponent(CFG.COMPANY);
-    const jn = encodeURIComponent(jobNo);
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=100&$orderby=Line_No`;
-    const r = await fetch(url);
-    if(!r.ok){ wrap.style.display='none'; return; }
-    const data = await r.json();
-    const lines = data.value||[];
-    if(lines.length===0){ wrap.style.display='none'; return; }
-
-    body.innerHTML='';
-    let totalWt = 0;
-    lines.forEach(l=>{
-      const tw = parseFloat(l.Total_Weight)||0;
-      totalWt += tw;
-      const tr = document.createElement('tr');
-      const typeClass = (l.Type||'').toLowerCase()==='resource'?'resource':'item';
-      tr.innerHTML=`
-        <td><span class="bom-type ${typeClass}">${l.Type||'—'}</span></td>
-        <td style="font-family:monospace;font-size:10px;">${l.No_||l['No.']||'—'}</td>
-        <td>${l.Description||'—'}</td>
-        <td style="text-align:right;">${(parseFloat(l.Weight_Per)||0).toFixed(2)}</td>
-        <td style="text-align:right;font-weight:600;">${tw.toFixed(2)}</td>`;
-      body.appendChild(tr);
-    });
-
-    document.getElementById('bomTotalWt').textContent = `Total: ${totalWt.toFixed(2)}g`;
-    wrap.style.display='block';
-
-    // Set metal weight slider from job data
-    const mwVal = parseFloat(window._currentJob?.Total_Metal_Weight)||totalWt||0;
-    if(mwWrap){
-      document.getElementById('mwSlider').value = mwVal;
-      document.getElementById('mwInput').value = mwVal.toFixed(2);
-      document.getElementById('mwDisplay').textContent = mwVal.toFixed(2)+'g';
-      document.getElementById('mwSlider').max = Math.max(50, mwVal*2);
-      mwWrap.style.display='block';
-    }
-  }catch(e){
-    wrap.style.display='none';
-  }
-}
 </script>
 </body>
 </html>
