@@ -341,17 +341,32 @@ input::placeholder{color:var(--text3);font-weight:300;}
 <body>
 
 <script>
+// CFG is populated from /config at startup — defaults ensure no crash before init
 const CFG={
-  WORKER_URL  :atob("aHR0cHM6Ly9oby1icm90aGVycy1iYy1wcm94eS5tZWVuYS1hZmEud29ya2Vycy5kZXY="),
   COMPANY     :"HOBrothers",
-  ENTITY      :"EJWJobs",
-  CAD_ENTITY  :"EJWJobsRW",
-  CO_ID       :"98240263-32db-f011-95d1-002248791087"
+  jobsPage    :"EJWJobs",
+  jobsRwPage  :"EJWJobsRW",
+  bomPage     :"EJWJobComponents",
+  imagesPage  :"JobImagesFactboxWS",
 };
 const MAX_IMAGES=4, MAX_IMG_SIZE=25*1024*1024;
 const ALLOWED_TYPES=['image/jpeg','image/jpg','image/png','image/webp','image/gif'];
 const MAX_THINK_LEN=175;
-const api=(path,qs="")=>`${CFG.WORKER_URL}/bc/Company('${encodeURIComponent(CFG.COMPANY)}')/${path}${qs}`;
+// All OData calls go to /api/bc/<page> on same origin — server adds BC auth header
+const api=(path,qs="")=>`/api/bc/${path}${qs}`;
+
+async function init(){
+  try{
+    const res = await fetch('/config');
+    if(!res.ok) throw new Error('Config fetch failed: '+res.status);
+    const cfg = await res.json();
+    Object.assign(CFG, cfg);
+    addLog('info','Portal ready',`Logged in as ${cfg.user?.email||'unknown'} · BC14 on-prem`);
+  }catch(e){
+    addLog('error','Init failed',e.message);
+    toast('Could not connect to server — refresh the page','err');
+  }
+}
 </script>
 
 <!-- ANIMATED BACKGROUND -->
@@ -755,7 +770,7 @@ async function doLook(){
   resetJ();
   addLog('info',`Job lookup started`,`Job No: ${no}`);
   try{
-    const d=await proxyGet(CFG.ENTITY,`?$filter=Job_No eq '${encodeURIComponent(no)}'&$top=1`);
+    const d=await proxyGet(CFG.jobsPage,`?$filter=Job_No eq '${encodeURIComponent(no)}'&$top=1`);
     const j=d.value?.[0];
     if(!j){
       document.getElementById('nfT').textContent=`"${no}" — Job Not Found`;
@@ -766,7 +781,7 @@ async function doLook(){
       job=j; fillJob(j);
       document.getElementById('jfCard').classList.add('on');
       unlockCards();
-      if(j.Vntana_Link&&!document.getElementById('lnkIn').value){document.getElementById('lnkIn').value=j.Vntana_Link;onLinkIn();}
+      if(j.Thinkspace_Link&&!document.getElementById('lnkIn').value){document.getElementById('lnkIn').value=j.Thinkspace_Link;onLinkIn();}
       addLog('ok',`Job found: ${j.Job_No}`,`Customer: ${j.Customer_Name||j.Customer_Name_2||'—'} · Status: ${j.Status||'—'} · Item: ${j.Item_No||'—'}`);
     }
   }catch(e){
@@ -928,7 +943,7 @@ async function doSub(){
 
   // Build PATCH path — use OData filter approach for EJWJobs
   // The correct way: PATCH to entity set filtered by Job_No
-  const patchPath=`${CFG.ENTITY}?$filter=Job_No eq '${encodeURIComponent(job.Job_No)}'`;
+  const patchPath=`${CFG.jobsPage}?$filter=Job_No eq '${encodeURIComponent(job.Job_No)}'`;
 
   addLog('info',`Update started for job: ${job.Job_No}`,`Images: ${images.length} · Link: ${lnk?'Yes':'No'}`);
   showOv('Updating Business Central…');
@@ -939,7 +954,7 @@ async function doSub(){
       // Use the single-entity PATCH with Job_No as filter
       const mwInput = document.getElementById('mwInput');
       const mwVal = mwInput ? parseFloat(mwInput.value)||null : null;
-      const patchBody = {Vntana_Link:lnk};
+      const patchBody = {Thinkspace_Link:lnk};
       if(mwVal!==null) patchBody['Total_Metal_Weight']=mwVal;
       await proxyPatchByFilter(job.Job_No,etag,patchBody);
       addLog('ok',`Thinkspace link saved: ${job.Job_No}`,`URL: ${lnk}`);
@@ -999,32 +1014,43 @@ async function doSub(){
 
 // PATCH — re-fetches fresh etag then tries all key formats
 async function proxyPatchByFilter(jobNo, etag, body){
-  const co   = encodeURIComponent(CFG.COMPANY);
-  const jn   = encodeURIComponent(jobNo);
-  const base = `${CFG.WORKER_URL}/bc/Company('${co}')`;
+  const page = CFG.jobsRwPage;
 
-  // Get fresh etag from EJWJobsRW
+  // Fetch fresh record to get composite key fields + ETag
+  let rec = null;
   let freshEtag = '*';
   try{
-    const gr = await fetch(`${base}/EJWJobsRW?$filter=Job_No eq '${jn}'&$top=1`);
+    const gr = await fetch(`/api/bc/${page}?$filter=Job_No eq '${encodeURIComponent(jobNo)}'&$top=1`);
     if(gr.ok){
-      const rec = (await gr.json()).value?.[0];
+      rec = (await gr.json()).value?.[0] || null;
       if(rec) freshEtag = rec['@odata.etag']||'*';
     }
   }catch(_){}
 
-  // Try key formats - ODataKeyFields="Job No." should mean Job_No is the key
-  const attempts = [
-    `${base}/EJWJobsRW(Job_No='${jn}')`,
-    `${base}/EJWJobsRW('${jn}')`,
-    `${base}/EJWJobsRW(No='${jn}')`,
-  ];
+  // Build key — BC14 JWJobCard uses composite key (Job_No, Job_Type, Item_No)
+  let attempts = [];
+  if(rec){
+    const jn = encodeURIComponent(rec.Job_No  || jobNo);
+    const jt = encodeURIComponent(rec.Job_Type || '');
+    const it = encodeURIComponent(rec.Item_No  || '');
+    attempts = [
+      `/api/bc/${page}(Job_No='${jn}',Job_Type='${jt}',Item_No='${it}')`,
+      `/api/bc/${page}(Job_No='${jn}',Job_Type='${jt}')`,
+    ];
+  }
+  // Fallback single-key formats
+  const jnFb = encodeURIComponent(jobNo);
+  attempts.push(
+    `/api/bc/${page}(Job_No='${jnFb}')`,
+    `/api/bc/${page}('${jnFb}')`,
+    `/api/bc/${page}(No='${jnFb}')`,
+  );
 
   let lastErr = '';
   for(const url of attempts){
     const r = await fetch(url,{
       method:'PATCH',
-      headers:{'Content-Type':'application/json','If-Match':'*'},
+      headers:{'Content-Type':'application/json','If-Match': freshEtag},
       body:JSON.stringify(body)
     });
     if(r.ok||r.status===204){
@@ -1039,31 +1065,19 @@ async function proxyPatchByFilter(jobNo, etag, body){
   throw new Error(lastErr);
 }
 
-// Picture upload — tries EJWJWJobCard then JobCard
 async function proxyPicByJobNo(jobNo, b64, mime, slotIndex){
-  const base    = CFG.WORKER_URL;
-  const pureB64 = b64.split(',')[1]||b64;
-  const slot    = slotIndex || 1;
-
-  // Call SOAP codeunit via worker — send JSON, worker converts to SOAP
-  const r = await fetch(`${base}/soap/EJWJobsImageUpload`, {
+  const slot = slotIndex || 1;
+  const r = await fetch('/api/images/upload', {
     method : 'POST',
     headers: {'Content-Type':'application/json'},
-    body   : JSON.stringify({JobNo: jobNo, PictureBase64: pureB64, PictureSlot: slot})
+    body   : JSON.stringify({jobNo, slot, base64: b64, mime})
   });
-
-  const t = await r.text();
-  addLog('info',`SOAP ${r.status}`,t.slice(0,500));
-
-  if(r.ok){
-    const data = JSON.parse(t);
-    if(data.success){
-      addLog('ok',`Image uploaded to Job Picture`,`Job: ${jobNo} · Slot: ${slot}`);
-      return {};
-    }
-    throw new Error(`SOAP fault: ${data.body?.slice(0,100)}`);
+  const data = await r.json();
+  if(data.success){
+    addLog('ok',`Image uploaded to BC`,`Job: ${jobNo} · Slot: ${slot}`);
+    return {};
   }
-  throw new Error(`${r.status}: ${t.slice(0,100)}`);
+  throw new Error(data.error || `Image upload failed (${r.status})`);
 }
 
 // ── OVERLAY / TOAST ───────────────────────────
@@ -1080,7 +1094,8 @@ function toast(m,tp){
   clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('on'),5000);
 }
 
-addLog('info','Portal ready','HO Brothers CAD Portal · BC UAT · Authenticated via Cloudflare Worker');
+// init() fetches /config from server and populates CFG with real BC14 page names
+init();
 
 
 
@@ -1168,7 +1183,6 @@ async function saveBOMWeights(jobNo, jobType){
   const lines = window._bomLines||[];
   const inputs = document.querySelectorAll('.bom-sb-input');
   let saved=0, errors=0;
-  const co = encodeURIComponent(CFG.COMPANY);
 
   for(const inp of inputs){
     const idx = parseInt(inp.dataset.idx);
@@ -1181,7 +1195,7 @@ async function saveBOMWeights(jobNo, jobType){
     const jt = encodeURIComponent(jobType||line.Job_Type||'Regular');
     const jn = encodeURIComponent(jobNo);
     const ln = line.Line_No;
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
+    const url = `/api/bc/${CFG.bomPage}(Job_No='${jn}',Job_Type='${jt}',Line_No=${ln})`;
     try{
       const r = await fetch(url,{
         method:'PATCH',
@@ -1219,15 +1233,15 @@ async function fetchBCImages(jobNo){
   section.style.display = 'block';
 
   try{
-    // Fetch all 4 slots via SOAP GetPicture — skip blanks
+    // Fetch all 4 slots via /api/images/get — skip blanks
     let hasImages = false;
     gallery.innerHTML = '';
 
     for(let slot=1; slot<=4; slot++){
-      const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsGetPicture`,{
+      const r = await fetch('/api/images/get',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({JobNo:jobNo, PictureSlot:slot})
+        body:JSON.stringify({jobNo, slot})
       });
       const d = await r.json();
       if(d.success && d.base64 && d.base64.length > 10){
@@ -1266,10 +1280,10 @@ async function fetchBCImages(jobNo){
 
 async function deleteBCImage(jobNo, slot){
   try{
-    const r = await fetch(`${CFG.WORKER_URL}/soap/EJWJobsImageUpload`,{
+    await fetch('/api/images/delete',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({JobNo:jobNo, PictureBase64:'DELETE', PictureSlot:slot})
+      body:JSON.stringify({jobNo, slot})
     });
     addLog('info',`Slot ${slot} deleted`,`Job: ${jobNo}`);
   }catch(e){ addLog('info','Delete error',e.message); }
@@ -1282,9 +1296,8 @@ async function fetchBOMLines(jobNo){
   wrap.style.display='block';
   body.innerHTML='<tr><td colspan="5" style="padding:10px;color:#888;font-size:11px;">Loading BOM...</td></tr>';
   try{
-    const co = encodeURIComponent(CFG.COMPANY);
     const jn = encodeURIComponent(jobNo);
-    const url = `${CFG.WORKER_URL}/bc/Company('${co}')/EJWJobComponents?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
+    const url = `/api/bc/${CFG.bomPage}?$filter=Job_No eq '${jn}'&$top=200&$orderby=Line_No`;
     const r = await fetch(url);
     const txt = await r.text();
     addLog('info',`BOM fetch ${r.status}`,txt.slice(0,120));
